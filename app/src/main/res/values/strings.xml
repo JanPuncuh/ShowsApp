@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">JanInfinum</string>
+    <string name="passwordHint">Password</string>
+    <string name="emailHint">Email</string>
+    <string name="loginButton">Login</string>
+    <string name="LoginTitle">Login</string>
+    <string name="LoginDescription">In order to continue please log in</string>
 </resources>
