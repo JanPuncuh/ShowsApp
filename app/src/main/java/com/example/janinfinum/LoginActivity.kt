@@ -1,9 +1,7 @@
 package com.example.janinfinum
 
+import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
-import android.view.MotionEvent
-import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -19,8 +17,15 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.isEnabled = false
         binding.button.setOnClickListener {
+            
+            // Create the text message with a string.
+            val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
+
+            val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
+                putExtra("NAME", substring)
+            }
+            startActivity(sendNameIntent)
         }
 
         //ob vsaki spremembi preveri veljavnost emaila
@@ -29,9 +34,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.editTextEmailAddress.error = "Invalid e-mail address"
             }
 
-            binding.button.isEnabled =
-                validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
-
+            //login button dela, če je pravilen mail in geslo
+            binding.button.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
         }
 
         //ob vsaki spremembi preveri veljavnost geslo
@@ -40,8 +44,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.editTextPassword.error = "Must contain at least 6 characters"
             }*/
 
-            binding.button.isEnabled =
-                validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
+            //login button dela, če je pravilen mail in geslo
+            binding.button.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
         }
     }
 
