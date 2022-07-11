@@ -66,16 +66,16 @@
         app:passwordToggleDrawable="@drawable/ic_baseline_visibility_24"
         app:passwordToggleEnabled="true" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
-        android:backgroundTint="@color/white"
         android:enabled="false"
+        android:background="@drawable/button"
         android:text="@string/loginButton"
-        android:textColor="@color/my_purple"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
