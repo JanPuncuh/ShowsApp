@@ -1,26 +1,26 @@
 package com.example.janinfinum
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
-import com.example.janinfinum.databinding.ActivityLoginBinding
-import android.view.MotionEvent
-import android.view.View
-
-import android.view.View.OnTouchListener
 import android.text.method.PasswordTransformationMethod
-
-
-
-
-
-lateinit var binding: ActivityLoginBinding
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
+import com.example.janinfinum.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
+
+    companion object {
+        private const val MIN_PASSWORD_LENGTH = 6
+        val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
+        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         var showPassword = false
@@ -28,35 +28,32 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.button.setOnClickListener {
+        binding.loginButton.setOnClickListener {
 
-            // Create the text message with a string.
             val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
 
             val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
-                putExtra("NAME", substring)
+                putExtra(EXTRA_USERNAME, substring)
             }
             startActivity(sendNameIntent)
         }
 
-        //ob vsaki spremembi preveri veljavnost emaila
-        binding.editTextEmailAddress.addTextChangedListener {
+        //checks validation of email
+        binding.editTextEmailAddress.doAfterTextChanged {
+            //if email isn't valid, shows error icon and error text
             if (!emailValidate(binding.editTextEmailAddress.text.toString())) {
-                binding.editTextEmailAddress.error = "Invalid e-mail address"
+                binding.editTextEmailAddress.error = getString(R.string.invalidEmailErrorMessage)
             }
 
-            //login button dela, če je pravilen mail in geslo
-            binding.button.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
+            //enables login button when email and password are valid
+            setValidationListener()
         }
 
-        //ob vsaki spremembi preveri veljavnost geslo
-        binding.editTextPassword.addTextChangedListener {
-            /*if (!passwordValidate(binding.editTextPassword.text.toString())) {
-                binding.editTextPassword.error = "Must contain at least 6 characters"
-            }*/
 
-            //login button dela, če je pravilen mail in geslo
-            binding.button.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
+        //checks validation of password
+        binding.editTextPassword.doAfterTextChanged {
+            //enables login button when email and password are valid
+            setValidationListener()
         }
 
         binding.editTextPassword.setOnTouchListener(OnTouchListener { v, event ->
@@ -68,15 +65,13 @@ class LoginActivity : AppCompatActivity() {
                 if (event.rawX >= binding.editTextPassword.right - binding.editTextPassword.compoundDrawables[DRAWABLE_RIGHT].bounds.width()) {
                     //your action here
 
-                    //geslo je prikazano, skrije ga
+                    //hides the password
                     if (showPassword) {
-                        Log.i("TEST", "test")
                         binding.editTextPassword.transformationMethod = PasswordTransformationMethod() //hide the password from the edit text
 
                     }
-                    //geslo je skirto, pokaže ga
+                    //shows password
                     else {
-                        Log.i("TEST", "test2")
                         binding.editTextPassword.transformationMethod = null; // another option show the password from the edit text
                     }
                     showPassword = !showPassword
@@ -90,17 +85,20 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun emailValidate(email: String): Boolean {
-        val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
         return email.isNotEmpty() && emailRegex.containsMatchIn(email)
     }
 
     private fun passwordValidate(password: String): Boolean {
-        return password.length >= 6
+        return password.length >= MIN_PASSWORD_LENGTH
     }
 
     //preveri, če se email ujema z regexom in če je koda dolga vsaj 6 znakov
     private fun validateLogin(email: String, password: String): Boolean {
         return emailValidate(email) && passwordValidate(password)
+    }
+
+    private fun setValidationListener() {
+        binding.loginButton.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
     }
 
 }

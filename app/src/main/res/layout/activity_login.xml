@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddress" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <TextView
-        android:id="@+id/textViewLogin"
+        android:id="@+id/textViewLoginBig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
@@ -90,13 +90,13 @@
         app:layout_constraintVertical_bias="0.75"
         android:textColor="@color/white"
         android:text="@string/LoginTitle"
-        app:layout_constraintBottom_toTopOf="@+id/textViewLogin2"
+        app:layout_constraintBottom_toTopOf="@+id/textViewLoginSmall"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewTopRight"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/textViewLogin2"
+        android:id="@+id/textViewLoginSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
@@ -104,6 +104,6 @@
         android:text="@string/LoginDescription"
         app:layout_constraintBottom_toTopOf="@+id/editTextEmailAddress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLoginBig" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
