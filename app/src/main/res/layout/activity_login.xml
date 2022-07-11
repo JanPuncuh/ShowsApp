@@ -30,13 +30,13 @@
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
         android:layout_marginBottom="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:backgroundTint="@color/white"
         android:ems="10"
         android:hint="@string/emailHint"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,21 +50,21 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
         android:backgroundTint="@color/white"
+        android:drawableEnd="@drawable/ic_baseline_visibility_24"
         android:ems="10"
         android:hint="@string/passwordHint"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        android:drawableEnd="@drawable/ic_baseline_visibility_24"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleDrawable="@drawable/ic_baseline_visibility_24"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddress"
+        app:passwordToggleDrawable="@drawable/ic_baseline_visibility_24"
+        app:passwordToggleEnabled="true" />
 
     <Button
         android:id="@+id/loginButton"
@@ -73,9 +73,9 @@
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
         android:backgroundTint="@color/white"
-        android:textColor="@color/my_purple"
-        android:text="@string/loginButton"
         android:enabled="false"
+        android:text="@string/loginButton"
+        android:textColor="@color/my_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,13 +86,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
-        android:textSize="@dimen/textsize_big"
-        app:layout_constraintVertical_bias="0.75"
-        android:textColor="@color/white"
         android:text="@string/LoginTitle"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_big"
         app:layout_constraintBottom_toTopOf="@+id/textViewLoginSmall"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewTopRight"
+        app:layout_constraintVertical_bias="0.75"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
@@ -100,10 +100,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
-        android:textColor="@color/white"
         android:text="@string/LoginDescription"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/editTextEmailAddress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLoginBig" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/textViewLoginBig"
+        app:layout_constraintEnd_toStartOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewTopLeft"
+        app:srcCompat="@drawable/ic_arrow" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shows"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_big"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewLoginBig"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewTopRight"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewTopLeft" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
