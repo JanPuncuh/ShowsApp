@@ -72,8 +72,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
-        android:enabled="false"
         android:background="@drawable/button"
+        android:enabled="false"
         android:text="@string/loginButton"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -107,28 +107,26 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewLoginBig" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/arrowLogoShows"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/textViewLoginBig"
-        app:layout_constraintEnd_toStartOf="@+id/textView"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewTopRight"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewTopLeft"
         app:srcCompat="@drawable/ic_arrow" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewShowsLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="@string/shows"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize_big"
-        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toTopOf="@+id/textViewLoginBig"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewTopRight"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/arrowLogoShows"
         app:layout_constraintTop_toBottomOf="@+id/imageViewTopLeft" />
 
 

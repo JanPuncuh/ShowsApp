@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="margin_start">25dp</dimen>
-    <dimen name="margin_end">25dp</dimen>
+    <dimen name="margin_start">24dp</dimen>
+    <dimen name="margin_end">24dp</dimen>
     <dimen name="textsize_big">36sp</dimen>
     <dimen name="loginButtonRadius">32dp</dimen>
 </resources>
