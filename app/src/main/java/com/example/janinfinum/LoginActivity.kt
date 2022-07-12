@@ -6,6 +6,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import com.example.janinfinum.databinding.ActivityLoginBinding
 
@@ -68,11 +69,13 @@ class LoginActivity : AppCompatActivity() {
                     //hides the password
                     if (showPassword) {
                         binding.editTextPassword.transformationMethod = PasswordTransformationMethod() //hide the password from the edit text
+                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_24, 0)
 
                     }
                     //shows password
                     else {
                         binding.editTextPassword.transformationMethod = null; // another option show the password from the edit text
+                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_off_24, 0)
                     }
                     showPassword = !showPassword
 
