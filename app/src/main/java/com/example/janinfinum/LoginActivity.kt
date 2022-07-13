@@ -6,8 +6,8 @@ import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
 import com.example.janinfinum.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -16,8 +16,7 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         private const val MIN_PASSWORD_LENGTH = 6
-        val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
-        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
+        private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,15 +45,13 @@ class LoginActivity : AppCompatActivity() {
                 binding.editTextEmailAddress.error = getString(R.string.invalidEmailErrorMessage)
             }
 
-            //enables login button when email and password are valid
-            setValidationListener()
+            enableLoginButton()
         }
 
 
         //checks validation of password
         binding.editTextPassword.doAfterTextChanged {
-            //enables login button when email and password are valid
-            setValidationListener()
+            enableLoginButton()
         }
 
         binding.editTextPassword.setOnTouchListener(OnTouchListener { v, event ->
@@ -95,12 +92,11 @@ class LoginActivity : AppCompatActivity() {
         return password.length >= MIN_PASSWORD_LENGTH
     }
 
-    //preveri, če se email ujema z regexom in če je koda dolga vsaj 6 znakov
     private fun validateLogin(email: String, password: String): Boolean {
         return emailValidate(email) && passwordValidate(password)
     }
 
-    private fun setValidationListener() {
+    private fun enableLoginButton() {
         binding.loginButton.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
     }
 
