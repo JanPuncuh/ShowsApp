@@ -30,12 +30,15 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
 
-            val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
+            /*val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
 
             val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
                 putExtra(EXTRA_USERNAME, substring)
             }
-            startActivity(sendNameIntent)
+            startActivity(sendNameIntent)*/
+
+            val intent = ShowsActivity.buildIntent(this)
+            startActivity(intent)
         }
 
         //checks validation of email

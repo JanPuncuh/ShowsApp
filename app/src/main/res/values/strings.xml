@@ -7,4 +7,5 @@
     <string name="LoginDescription">In order to continue please log in</string>
     <string name="invalidEmailErrorMessage">Invalid e-mail address</string>
     <string name="shows">Shows</string>
+    <string name="empty_state_recycler_view">Your shows are not showing. Get it?</string>
 </resources>
