@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
@@ -24,6 +26,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         var showPassword = false
+
+        //hides the action bar
+        supportActionBar?.hide()
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)

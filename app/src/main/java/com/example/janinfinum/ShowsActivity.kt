@@ -2,11 +2,13 @@ package com.example.janinfinum
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_DESC
+import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_IMG
+import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_TITLE
 import com.example.janinfinum.databinding.ActivityShowsBinding
 
 class ShowsActivity : AppCompatActivity() {
@@ -30,13 +32,13 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        //val shows = listOf()
-
         super.onCreate(savedInstanceState)
 
         binding = ActivityShowsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //hides the action bar
+        supportActionBar?.hide()
 
         initShowsRecycler()
 
@@ -47,9 +49,17 @@ class ShowsActivity : AppCompatActivity() {
     }
 
     private fun initShowsRecycler() {
-        //click on item
+        //click on item in recycler view
         adapter = ShowsAdapter(shows) { show ->
-            Toast.makeText(this, show.title, Toast.LENGTH_SHORT).show()
+            val title = show.title
+            val desc = show.description
+            val img = show.imageResourceId
+            val intent = ShowDetailsActivity.buildIntent(this)
+            intent.putExtra(EXTRA_TITLE, title)
+            intent.putExtra(EXTRA_DESC, desc)
+            intent.putExtra(EXTRA_IMG, img)
+
+            startActivity(intent)
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(this)
