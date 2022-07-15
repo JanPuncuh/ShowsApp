@@ -6,18 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
 
 class ShowsActivity : AppCompatActivity() {
 
     private val shows = listOf(
-        Show("The Office", R.drawable.ic_office),
-        Show("Stranger Things", R.drawable.ic_stranger_things),
-        Show("Krv Nije Voda", R.drawable.krv_nije_voda_1),
+        Show("The Office", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_office),
+        Show("Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things),
+        Show("Krv Nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.krv_nije_voda_1),
     )
 
+    //use this list for empty recyclerView testing
     //private val shows = emptyList<Show>()
 
     private lateinit var binding: ActivityShowsBinding
@@ -49,7 +49,7 @@ class ShowsActivity : AppCompatActivity() {
     private fun initShowsRecycler() {
         //click on item
         adapter = ShowsAdapter(shows) { show ->
-            Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, show.title, Toast.LENGTH_SHORT).show()
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(this)

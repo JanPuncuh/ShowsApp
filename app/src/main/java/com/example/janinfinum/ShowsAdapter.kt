@@ -12,7 +12,7 @@ class ShowsAdapter(
 
     inner class ShowViewHolder(private val binding: ShowFrameLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Show) {
-            binding.showTitle.text = item.name
+            binding.showTitle.text = item.title
             binding.showImage.setImageResource(item.imageResourceId)
 
             binding.cardContainer.setOnClickListener {

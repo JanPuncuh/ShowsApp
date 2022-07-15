@@ -8,4 +8,6 @@
     <string name="invalidEmailErrorMessage">Invalid e-mail address</string>
     <string name="shows">Shows</string>
     <string name="empty_state_recycler_view">Your shows are not showing. Get it?</string>
+    <string name="showTitle">showTitle</string>
+    <string name="showDescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</string>
 </resources>
