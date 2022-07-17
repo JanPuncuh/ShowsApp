@@ -10,6 +10,7 @@
     <string name="empty_state_recycler_view">Your shows are not showing. Get it?</string>
     <string name="showTitle">showTitle</string>
     <string name="showDescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</string>
+    <string name="reviewsExtra">Reviews (%1$.2f average on %2$d reviews)</string>
     <string name="reviews">Reviews</string>
     <string name="write_your_review">Write your review</string>
     <string name="review_rating_placeholder">3</string>

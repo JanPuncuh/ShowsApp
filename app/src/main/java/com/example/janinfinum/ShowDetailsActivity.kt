@@ -17,12 +17,12 @@ class ShowDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowDetailsBinding
     private lateinit var adapter: ReviewAdapter
 
-    private var reviews = mutableListOf(
-        Review("TestUser", "kr neki", 1F, R.drawable.ic_profile_placeholder),
-        Review("TestUser", "test", 2F, R.drawable.ic_profile_placeholder),
-        Review("TestUser", "OK", 3F, R.drawable.ic_profile_placeholder),
-        Review("TestUser", "dogshit", 4F, R.drawable.ic_profile_placeholder),
-        Review("TestUser", "AAAAAAAAAAAAa", 5F, R.drawable.ic_profile_placeholder),
+    private var reviews = mutableListOf<Review>(
+        //Review("TestUser", "??????????", 1F, R.drawable.ic_profile_placeholder),
+        //Review("TestUser", "test", 2F, R.drawable.ic_profile_placeholder),
+        //Review("TestUser", "OK", 3F, R.drawable.ic_profile_placeholder),
+        //Review("TestUser", "kr neki", 4F, R.drawable.ic_profile_placeholder),
+        //Review("TestUser", "AAAAAAAAAAAAa", 5F, R.drawable.ic_profile_placeholder),
     )
 
     companion object {
@@ -50,12 +50,15 @@ class ShowDetailsActivity : AppCompatActivity() {
         binding.showDetailDesc.text = desc
         binding.showDetailImage.setImageResource(img)
 
-        binding.textViewReviews.text = "Reviews" + " (" + averageRating(reviews) + " average " + reviews.count().toString() + " reviews)"
+        supportActionBar?.hide()
+
+        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
         binding.ratingBar.rating = averageRating(reviews)
 
-        if (reviews.isNotEmpty()) {
-            binding.emptyStateText.isVisible = false
-            binding.ratingBar.isVisible = true
+        if (reviews.isEmpty()) {
+            binding.recyclerVewReviews.isVisible = false
+            binding.ratingBar.isVisible = false
+            binding.textViewReviews.text = resources.getString(R.string.reviews)
         }
 
         initReviewRecycler()
@@ -107,7 +110,16 @@ class ShowDetailsActivity : AppCompatActivity() {
     private fun addReview(review: Review) {
         adapter.addItem(review)
         reviews.add(review)
-        binding.textViewReviews.text = "Reviews" + " (" + averageRating(reviews) + " average " + reviews.count().toString() + " reviews)"
+        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
+
+        if (reviews.isEmpty()) {
+            binding.textViewReviews.text = resources.getString(R.string.reviews)
+        }
+
+        if (reviews.isNotEmpty()) {
+            binding.recyclerVewReviews.isVisible = true
+            binding.ratingBar.isVisible = true
+        }
 
     }
 

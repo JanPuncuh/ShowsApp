@@ -42,7 +42,7 @@
         android:id="@+id/textViewReviews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reviews"
+        android:text="@string/reviewsExtra"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
