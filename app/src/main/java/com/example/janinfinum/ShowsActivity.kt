@@ -53,6 +53,23 @@ class ShowsActivity : AppCompatActivity() {
             binding.showsText.isVisible = false
         }
 
+        //makes it as there are no shows
+        binding.recycleView.isVisible = false
+        binding.emptyStateText.isVisible = true
+        binding.emptyStateImageBackground.isVisible = true
+        binding.emptyStateImageForeground.isVisible = true
+        binding.showsText.isVisible = false
+
+        //shows appear when user clicks on image
+        binding.emptyStateImageBackground.setOnClickListener() {
+            binding.recycleView.isVisible = !binding.recycleView.isVisible
+
+            binding.emptyStateText.isVisible = !binding.emptyStateText.isVisible
+            binding.emptyStateImageBackground.isVisible = !binding.emptyStateImageBackground.isVisible
+            binding.emptyStateImageForeground.isVisible = !binding.emptyStateImageForeground.isVisible
+            binding.showsText.isVisible = !binding.showsText.isVisible
+        }
+
     }
 
     private fun initShowsRecycler() {
