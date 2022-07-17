@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="my_purple">#FF3D1D72</color>
     <color name="grey">#FF707070</color>
+    <color name="ratingBarStarColour">#FF52368C</color>
 </resources>

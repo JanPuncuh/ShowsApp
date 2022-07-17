@@ -37,4 +37,23 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textAlignment="center"/>
 
+    <ImageView
+        android:id="@+id/emptyStateImageBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/emptyStateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_ellipse_5" />
+
+    <ImageView
+        android:id="@+id/emptyStateImageForeground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/emptyStateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/emptyStateImageBackground"
+        app:srcCompat="@drawable/ic_camera_1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
