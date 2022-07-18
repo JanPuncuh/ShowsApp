@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight">
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShowDetailsActivity"
             android:exported="false" />
         <activity
