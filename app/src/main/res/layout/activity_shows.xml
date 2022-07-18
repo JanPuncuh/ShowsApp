@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="@string/shows"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/textsize_big"
+        android:layout_marginStart="@dimen/margin_start"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

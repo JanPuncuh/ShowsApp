@@ -119,6 +119,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         if (reviews.isNotEmpty()) {
             binding.recyclerVewReviews.isVisible = true
             binding.ratingBar.isVisible = true
+            binding.emptyStateText.isVisible = false
         }
 
     }
