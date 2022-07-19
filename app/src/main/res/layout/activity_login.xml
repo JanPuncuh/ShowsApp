@@ -128,7 +128,7 @@
         app:hintTextColor="@color/white"
         android:hint="@string/passwordHint"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/textinput"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
         android:layout_marginTop="10dp"
