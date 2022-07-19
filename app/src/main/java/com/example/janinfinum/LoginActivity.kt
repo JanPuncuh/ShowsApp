@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
-import android.view.Window
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
@@ -27,23 +25,17 @@ class LoginActivity : AppCompatActivity() {
 
         var showPassword = false
 
-        //hides the action bar
-        supportActionBar?.hide()
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.loginButton.setOnClickListener {
 
-            /*val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
+            val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
 
             val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
                 putExtra(EXTRA_USERNAME, substring)
             }
-            startActivity(sendNameIntent)*/
-
-            val intent = ShowsActivity.buildIntent(this)
-            startActivity(intent)
+            startActivity(sendNameIntent)
         }
 
         //checks validation of email
@@ -56,39 +48,10 @@ class LoginActivity : AppCompatActivity() {
             enableLoginButton()
         }
 
-
         //checks validation of password
         binding.editTextPassword.doAfterTextChanged {
             enableLoginButton()
         }
-
-        binding.editTextPassword.setOnTouchListener(OnTouchListener { v, event ->
-            val DRAWABLE_LEFT = 0
-            val DRAWABLE_TOP = 1
-            val DRAWABLE_RIGHT = 2
-            val DRAWABLE_BOTTOM = 3
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= binding.editTextPassword.right - binding.editTextPassword.compoundDrawables[DRAWABLE_RIGHT].bounds.width()) {
-                    //your action here
-
-                    //hides the password
-                    if (showPassword) {
-                        binding.editTextPassword.transformationMethod = PasswordTransformationMethod() //hide the password from the edit text
-                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_24, 0)
-
-                    }
-                    //shows password
-                    else {
-                        binding.editTextPassword.transformationMethod = null; // another option show the password from the edit text
-                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_off_24, 0)
-                    }
-                    showPassword = !showPassword
-
-                    return@OnTouchListener true
-                }
-            }
-            return@OnTouchListener false
-        })
 
     }
 
