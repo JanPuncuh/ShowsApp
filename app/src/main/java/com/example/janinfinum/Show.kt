@@ -9,4 +9,4 @@ data class Show(
     val description: String,
     @DrawableRes val imageResourceId: Int,
     val ID: UUID = randomUUID()
-)
+) : DetailsItem
