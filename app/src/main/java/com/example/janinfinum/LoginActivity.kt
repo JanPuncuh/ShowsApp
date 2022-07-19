@@ -48,39 +48,10 @@ class LoginActivity : AppCompatActivity() {
             enableLoginButton()
         }
 
-
         //checks validation of password
         binding.editTextPassword.doAfterTextChanged {
             enableLoginButton()
         }
-
-        binding.editTextPassword.setOnTouchListener(OnTouchListener { v, event ->
-            val DRAWABLE_LEFT = 0
-            val DRAWABLE_TOP = 1
-            val DRAWABLE_RIGHT = 2
-            val DRAWABLE_BOTTOM = 3
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= binding.editTextPassword.right - binding.editTextPassword.compoundDrawables[DRAWABLE_RIGHT].bounds.width()) {
-                    //your action here
-
-                    //hides the password
-                    if (showPassword) {
-                        binding.editTextPassword.transformationMethod = PasswordTransformationMethod() //hide the password from the edit text
-                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_24, 0)
-
-                    }
-                    //shows password
-                    else {
-                        binding.editTextPassword.transformationMethod = null; // another option show the password from the edit text
-                        binding.editTextPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_off_24, 0)
-                    }
-                    showPassword = !showPassword
-
-                    return@OnTouchListener true
-                }
-            }
-            return@OnTouchListener false
-        })
 
     }
 
