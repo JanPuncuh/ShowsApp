@@ -1,22 +1,18 @@
 package com.example.janinfinum
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
 import com.example.janinfinum.databinding.ActivityLoginBinding
 
 class LoginActivity : Fragment() {
 
-    private lateinit var binding: ActivityLoginBinding
+    private var _binding: ActivityLoginBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         private const val MIN_PASSWORD_LENGTH = 6
@@ -25,16 +21,18 @@ class LoginActivity : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //return super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.activity_login, container, false)
+        val ret = inflater.inflate(R.layout.activity_login, container, false)
+
+        _binding = ActivityLoginBinding.inflate(inflater,container,false)
+        return binding.root
+        
     }
 
     override fun onStart() {
         super.onStart()
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-
         binding.loginButton.setOnClickListener {
-            val intent = ShowsActivity.buildIntent(activity!!)
+            val intent = ShowsActivity.buildIntent(requireActivity())
             startActivity(intent)
         }
 
@@ -44,6 +42,8 @@ class LoginActivity : Fragment() {
             if (!emailValidate(binding.editTextEmailAddress.text.toString())) {
                 binding.editTextEmailAddress.error = getString(R.string.invalidEmailErrorMessage)
             }
+
+            Log.d("TEST", "test")
 
             enableLoginButton()
         }
