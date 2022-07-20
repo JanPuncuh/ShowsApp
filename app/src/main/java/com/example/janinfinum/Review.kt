@@ -8,4 +8,4 @@ data class Review(
     val rating: Float,
     @DrawableRes
     val profilePicture: Int
-)
+) : DetailsItem

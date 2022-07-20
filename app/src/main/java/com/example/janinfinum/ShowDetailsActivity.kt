@@ -17,7 +17,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowDetailsBinding
     private lateinit var adapter: ReviewAdapter
 
-    private var reviews = mutableListOf<Review>(
+    private var reviews = mutableListOf<DetailsItem>(
         //Review("TestUser", "??????????", 1F, R.drawable.ic_profile_placeholder),
         //Review("TestUser", "test", 2F, R.drawable.ic_profile_placeholder),
         //Review("TestUser", "OK", 3F, R.drawable.ic_profile_placeholder),
@@ -46,7 +46,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         val desc = intent.getStringExtra(EXTRA_DESC).toString()
         val img = intent.getIntExtra(EXTRA_IMG, 0)
 
-        binding.showDetailTitle.text = title
+        binding.showDetailTitle.title = title
         binding.showDetailDesc.text = desc
         binding.showDetailImage.setImageResource(img)
 
@@ -99,8 +99,8 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private fun initReviewRecycler() {
         //click on item in recycler view
-        adapter = ReviewAdapter(reviews) { review ->
-            Toast.makeText(this, review.comment, Toast.LENGTH_SHORT).show()
+        adapter = ReviewAdapter(reviews) {
+
         }
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(this)
@@ -124,10 +124,12 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     }
 
-    private fun averageRating(list: List<Review>): Float {
+    private fun averageRating(list: List<DetailsItem>): Float {
         var rating = 0F
         list.forEach {
-            rating += it.rating
+            if (it is Review) {
+                rating += it.rating
+            }
         }
         rating /= list.count()
         return rating
