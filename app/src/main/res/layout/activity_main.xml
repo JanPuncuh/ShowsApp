@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <fragment
+        android:name="com.example.janinfinum.LoginActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragmentMain" />
 </androidx.constraintlayout.widget.ConstraintLayout>

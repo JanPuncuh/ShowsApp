@@ -3,14 +3,18 @@ package com.example.janinfinum
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
+import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
 import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
 import com.example.janinfinum.databinding.ActivityLoginBinding
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : Fragment() {
 
     private lateinit var binding: ActivityLoginBinding
 
@@ -19,23 +23,19 @@ class LoginActivity : AppCompatActivity() {
         private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        //return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.activity_login, container, false)
+    }
 
-        super.onCreate(savedInstanceState)
-
-        var showPassword = false
+    override fun onStart() {
+        super.onStart()
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         binding.loginButton.setOnClickListener {
-
-            val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
-
-            val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
-                putExtra(EXTRA_USERNAME, substring)
-            }
-            startActivity(sendNameIntent)
+            val intent = ShowsActivity.buildIntent(activity!!)
+            startActivity(intent)
         }
 
         //checks validation of email
