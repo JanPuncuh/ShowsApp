@@ -11,9 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_DESC
-import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_IMG
-import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_TITLE
 import com.example.janinfinum.databinding.ActivityShowsBinding
 
 class ShowsActivity : Fragment() {
@@ -37,6 +34,10 @@ class ShowsActivity : Fragment() {
         fun buildIntent(activity: Activity): Intent {
             return Intent(activity, ShowsActivity::class.java)
         }
+
+        const val TITLE_ARG = "TITLE_ARG"
+        const val DESC_ARG = "DESC_ARG"
+        const val IMG_ARG = "IMG_ARG"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -87,22 +88,14 @@ class ShowsActivity : Fragment() {
     private fun initShowsRecycler() {
         //click on item in recycler view
         adapter = ShowsAdapter(shows) { show ->
-            /*val title = show.title
-            val desc = show.description
-            val img = show.imageResourceId
-            val intent = ShowDetailsActivity.buildIntent(requireActivity())
-            intent.putExtra(EXTRA_TITLE, title)
-            intent.putExtra(EXTRA_DESC, desc)
-            intent.putExtra(EXTRA_IMG, img)
-
-            startActivity(intent)*/
-
             val title = show.title
             val desc = show.description
             val img = show.imageResourceId
 
-            findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity,
-                bundleOf("TITLE_ARG" to title, "DESC_ARG" to desc, "IMG_ARG" to img))
+            findNavController().navigate(
+                R.id.action_showsActivity_to_showDetailsActivity,
+                bundleOf(TITLE_ARG to title, DESC_ARG to desc, IMG_ARG to img)
+            )
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(activity)

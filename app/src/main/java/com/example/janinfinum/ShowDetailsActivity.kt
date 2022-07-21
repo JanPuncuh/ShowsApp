@@ -7,12 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.janinfinum.ShowsActivity.Companion.DESC_ARG
+import com.example.janinfinum.ShowsActivity.Companion.IMG_ARG
+import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
-import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -27,11 +28,6 @@ class ShowDetailsActivity : Fragment() {
     private var reviews = mutableListOf<DetailsItem>()
 
     companion object {
-
-        const val EXTRA_TITLE = "EXTRA_TITLE"
-        const val EXTRA_DESC = "EXTRA_DESC"
-        const val EXTRA_IMG = "EXTRA_IMG"
-
         fun buildIntent(activity: Activity): Intent {
             return Intent(activity, ShowDetailsActivity::class.java)
         }
@@ -44,10 +40,10 @@ class ShowDetailsActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        val title = arguments?.getString("TITLE_ARG")
-        val desc = arguments?.getString("DESC_ARG")
-        val img = arguments?.getInt("IMG_ARG")
+
+        val title = arguments?.getString(TITLE_ARG)
+        val desc = arguments?.getString(DESC_ARG)
+        val img = arguments?.getInt(IMG_ARG)
 
         binding.showDetailTitle.title = title
         binding.showDetailDesc.text = desc
@@ -84,7 +80,7 @@ class ShowDetailsActivity : Fragment() {
             //if unrated
             if (bottomSheetBinding.newReviewRatingBar.rating == 0F) {
                 //notifies the user, doesn't add to list
-                //Toast.makeText(this, "Please rate the show", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Please rate the show", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -127,9 +123,9 @@ class ShowDetailsActivity : Fragment() {
 
     private fun averageRating(list: List<DetailsItem>): Float {
         var rating = 0F
-        list.forEach {
-            if (it is Review) {
-                rating += it.rating
+        list.forEach { review ->
+            if (review is Review) {
+                rating += review.rating
             }
         }
         rating /= list.count()
