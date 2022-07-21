@@ -44,15 +44,14 @@ class ShowDetailsActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val title: String = "intent.getStringExtra(EXTRA_TITLE).toString()"
-        val desc = "intent.getStringExtra(EXTRA_DESC).toString()"
-        //val img = intent.getIntExtra(EXTRA_IMG, 0)
-        val img = 0
+        
+        val title = arguments?.getString("TITLE_ARG")
+        val desc = arguments?.getString("DESC_ARG")
+        val img = arguments?.getInt("IMG_ARG")
 
         binding.showDetailTitle.title = title
         binding.showDetailDesc.text = desc
-        binding.showDetailImage.setImageResource(img)
+        binding.showDetailImage.setImageResource(img!!)
 
         binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
         binding.ratingBar.rating = averageRating(reviews)

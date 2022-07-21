@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -38,8 +39,8 @@ class ShowsActivity : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
-        _binding = ActivityShowsBinding.inflate(inflater,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = ActivityShowsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -72,7 +73,7 @@ class ShowsActivity : Fragment() {
             binding.showsText.isVisible = !binding.showsText.isVisible
             binding.imageLogout.isVisible = !binding.imageLogout.isVisible
         }
-        
+
         binding.imageLogout.setOnClickListener {
             findNavController().navigate(R.id.action_showsActivity_to_loginActivity)
         }
@@ -95,6 +96,13 @@ class ShowsActivity : Fragment() {
             intent.putExtra(EXTRA_IMG, img)
 
             startActivity(intent)*/
+
+            val title = show.title
+            val desc = show.description
+            val img = show.imageResourceId
+
+            findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity,
+                bundleOf("TITLE_ARG" to title, "DESC_ARG" to desc, "IMG_ARG" to img))
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(activity)
