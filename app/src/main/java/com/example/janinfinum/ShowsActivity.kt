@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_DESC
 import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_IMG
@@ -60,15 +61,20 @@ class ShowsActivity : Fragment() {
         binding.emptyStateImageBackground.isVisible = true
         binding.emptyStateImageForeground.isVisible = true
         binding.showsText.isVisible = false
+        binding.imageLogout.isVisible = false
 
         //shows appear when user clicks on image
         binding.emptyStateImageBackground.setOnClickListener() {
             binding.recycleView.isVisible = !binding.recycleView.isVisible
-
             binding.emptyStateText.isVisible = !binding.emptyStateText.isVisible
             binding.emptyStateImageBackground.isVisible = !binding.emptyStateImageBackground.isVisible
             binding.emptyStateImageForeground.isVisible = !binding.emptyStateImageForeground.isVisible
             binding.showsText.isVisible = !binding.showsText.isVisible
+            binding.imageLogout.isVisible = !binding.imageLogout.isVisible
+        }
+        
+        binding.imageLogout.setOnClickListener {
+            findNavController().navigate(R.id.action_showsActivity_to_loginActivity)
         }
     }
 
@@ -80,7 +86,7 @@ class ShowsActivity : Fragment() {
     private fun initShowsRecycler() {
         //click on item in recycler view
         adapter = ShowsAdapter(shows) { show ->
-            val title = show.title
+            /*val title = show.title
             val desc = show.description
             val img = show.imageResourceId
             val intent = ShowDetailsActivity.buildIntent(requireActivity())
@@ -88,7 +94,7 @@ class ShowsActivity : Fragment() {
             intent.putExtra(EXTRA_DESC, desc)
             intent.putExtra(EXTRA_IMG, img)
 
-            startActivity(intent)
+            startActivity(intent)*/
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(activity)
