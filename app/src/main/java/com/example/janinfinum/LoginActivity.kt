@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
+
 
 class LoginActivity : Fragment() {
 
@@ -19,21 +21,21 @@ class LoginActivity : Fragment() {
         private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         //return super.onCreateView(inflater, container, savedInstanceState)
-        val ret = inflater.inflate(R.layout.activity_login, container, false)
-
-        _binding = ActivityLoginBinding.inflate(inflater,container,false)
+        _binding = ActivityLoginBinding.inflate(inflater, container, false)
         return binding.root
-        
+
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.loginButton.setOnClickListener {
-            val intent = ShowsActivity.buildIntent(requireActivity())
-            startActivity(intent)
+            if (findNavController().currentDestination?.id == R.id.loginActivity) {
+                Log.d("TEST", "navigate?")
+                findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
+            }
         }
 
         //checks validation of email
@@ -43,8 +45,6 @@ class LoginActivity : Fragment() {
                 binding.editTextEmailAddress.error = getString(R.string.invalidEmailErrorMessage)
             }
 
-            Log.d("TEST", "test")
-
             enableLoginButton()
         }
 
@@ -53,6 +53,11 @@ class LoginActivity : Fragment() {
             enableLoginButton()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun emailValidate(email: String): Boolean {

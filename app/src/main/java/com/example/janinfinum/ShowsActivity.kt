@@ -3,15 +3,18 @@ package com.example.janinfinum
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_DESC
 import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_IMG
 import com.example.janinfinum.ShowDetailsActivity.Companion.EXTRA_TITLE
 import com.example.janinfinum.databinding.ActivityShowsBinding
 
-class ShowsActivity : AppCompatActivity() {
+class ShowsActivity : Fragment() {
 
     private val shows = listOf(
         Show(
@@ -23,10 +26,9 @@ class ShowsActivity : AppCompatActivity() {
         Show("Krv Nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.krv_nije_voda_1),
     )
 
-    //use this list for empty recyclerView testing
-    //private val shows = emptyList<Show>()
+    private var _binding: ActivityShowsBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var binding: ActivityShowsBinding
     private lateinit var adapter: ShowsAdapter
 
     companion object {
@@ -35,14 +37,13 @@ class ShowsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
+        _binding = ActivityShowsBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
-        binding = ActivityShowsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        //hides the action bar
-        supportActionBar?.hide()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initShowsRecycler()
 
@@ -69,7 +70,11 @@ class ShowsActivity : AppCompatActivity() {
             binding.emptyStateImageForeground.isVisible = !binding.emptyStateImageForeground.isVisible
             binding.showsText.isVisible = !binding.showsText.isVisible
         }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initShowsRecycler() {
@@ -78,7 +83,7 @@ class ShowsActivity : AppCompatActivity() {
             val title = show.title
             val desc = show.description
             val img = show.imageResourceId
-            val intent = ShowDetailsActivity.buildIntent(this)
+            val intent = ShowDetailsActivity.buildIntent(requireActivity())
             intent.putExtra(EXTRA_TITLE, title)
             intent.putExtra(EXTRA_DESC, desc)
             intent.putExtra(EXTRA_IMG, img)
@@ -86,7 +91,7 @@ class ShowsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.recycleView.layoutManager = LinearLayoutManager(this)
+        binding.recycleView.layoutManager = LinearLayoutManager(activity)
         binding.recycleView.adapter = adapter
 
     }
