@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="myRatingBar" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:colorControlNormal">@color/my_purple</item>
+        <item name="android:colorControlActivated">@color/my_purple</item>
+    </style>
+</resources>

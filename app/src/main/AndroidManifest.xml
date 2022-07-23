@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
+            android:name=".ShowDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShowsActivity"
+            android:exported="false" />
+        <activity
             android:name=".WelcomeActivity"
             android:exported="false" />
         <activity
