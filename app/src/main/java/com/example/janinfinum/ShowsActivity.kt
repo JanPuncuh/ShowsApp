@@ -1,20 +1,27 @@
 package com.example.janinfinum
 
-import android.app.Activity
-import android.content.Intent
+import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
+import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlin.system.exitProcess
 
 class ShowsActivity : Fragment() {
 
+    private lateinit var email: String
     private val shows = listOf(
         Show(
             "The Office",
@@ -31,10 +38,6 @@ class ShowsActivity : Fragment() {
     private lateinit var adapter: ShowsAdapter
 
     companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowsActivity::class.java)
-        }
-
         const val TITLE_ARG = "TITLE_ARG"
         const val DESC_ARG = "DESC_ARG"
         const val IMG_ARG = "IMG_ARG"
@@ -54,29 +57,10 @@ class ShowsActivity : Fragment() {
             binding.emptyStateText.isVisible = false
             binding.emptyStateImageBackground.isVisible = false
             binding.emptyStateImageForeground.isVisible = false
-            binding.showsText.isVisible = false
-        }
-
-        //makes it as there are no shows
-        binding.recycleView.isVisible = false
-        binding.emptyStateText.isVisible = true
-        binding.emptyStateImageBackground.isVisible = true
-        binding.emptyStateImageForeground.isVisible = true
-        binding.showsText.isVisible = false
-        binding.imageLogout.isVisible = false
-
-        //shows appear when user clicks on image
-        binding.emptyStateImageBackground.setOnClickListener() {
-            binding.recycleView.isVisible = !binding.recycleView.isVisible
-            binding.emptyStateText.isVisible = !binding.emptyStateText.isVisible
-            binding.emptyStateImageBackground.isVisible = !binding.emptyStateImageBackground.isVisible
-            binding.emptyStateImageForeground.isVisible = !binding.emptyStateImageForeground.isVisible
-            binding.showsText.isVisible = !binding.showsText.isVisible
-            binding.imageLogout.isVisible = !binding.imageLogout.isVisible
         }
 
         binding.imageLogout.setOnClickListener {
-            findNavController().navigate(R.id.action_showsActivity_to_loginActivity)
+            showProfileDialog()
         }
     }
 
@@ -102,4 +86,44 @@ class ShowsActivity : Fragment() {
         binding.recycleView.adapter = adapter
 
     }
+
+    private fun showProfileDialog() {
+        val dialog = BottomSheetDialog(requireActivity())
+
+        //drug layout binding
+        val bottomSheetBinding = ManageProfileBottomsheetLayoutBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
+
+        email = arguments?.getString(LoginActivity.EMAIL).toString()
+        bottomSheetBinding.userMail.text = email
+
+        //exits application
+        bottomSheetBinding.logoutButton.setOnClickListener {
+            showAlertDialog()
+        }
+
+        dialog.show()
+    }
+
+    private fun showAlertDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireActivity())
+        alertDialogBuilder.setTitle("Are you sure?")
+        alertDialogBuilder.setMessage("Are you sure you want to log out?")
+
+        //logs out user and closes the app
+        alertDialogBuilder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+            preferences.edit {
+                putBoolean(LoginActivity.REMEMBER_ME, false).commit()
+            }
+            exitProcess(-1)
+        }
+
+        alertDialogBuilder.setNegativeButton(android.R.string.no) { dialog, which ->
+            //cancels the logout
+        }
+
+        alertDialogBuilder.show()
+    }
+
 }

@@ -27,12 +27,6 @@ class ShowDetailsActivity : Fragment() {
 
     private var reviews = mutableListOf<DetailsItem>()
 
-    companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowDetailsActivity::class.java)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
         return binding.root
