@@ -1,13 +1,21 @@
 package com.example.janinfinum
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -18,9 +26,14 @@ import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlin.system.exitProcess
+import androidx.core.app.ActivityCompat
+
 
 class ShowsActivity : Fragment() {
 
+    private lateinit var bottomSheetBinding: ManageProfileBottomsheetLayoutBinding
+    private val REQUEST_ID_MULTIPLE_PERMISSIONS = 7
+    private lateinit var getContent: ActivityResultLauncher<Intent>
     private lateinit var email: String
     private val shows = listOf(
         Show(
@@ -46,6 +59,19 @@ class ShowsActivity : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = ActivityShowsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        //here is what happens to picture
+        getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+
+                val takenPhoto = result.data?.extras?.get("data")
+                bottomSheetBinding.profilePicture.setImageBitmap(takenPhoto as Bitmap?)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,12 +116,17 @@ class ShowsActivity : Fragment() {
     private fun showProfileDialog() {
         val dialog = BottomSheetDialog(requireActivity())
 
-        //drug layout binding
-        val bottomSheetBinding = ManageProfileBottomsheetLayoutBinding.inflate(layoutInflater)
+        bottomSheetBinding = ManageProfileBottomsheetLayoutBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
 
         email = arguments?.getString(LoginActivity.EMAIL).toString()
         bottomSheetBinding.userMail.text = email
+
+        bottomSheetBinding.changeProfilePictureButton.setOnClickListener {
+            if (checkAndRequestPermissions()) {
+                openCamera()
+            }
+        }
 
         //exits application
         bottomSheetBinding.logoutButton.setOnClickListener {
@@ -103,6 +134,24 @@ class ShowsActivity : Fragment() {
         }
 
         dialog.show()
+    }
+
+    fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        getContent.launch(intent) // zagon druge aktivnosti
+    }
+
+    private fun checkAndRequestPermissions(): Boolean {
+        val camera = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA)
+        val listPermissionsNeeded: MutableList<String> = ArrayList()
+        if (camera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA)
+        }
+        if (listPermissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(requireActivity(), listPermissionsNeeded.toTypedArray(), REQUEST_ID_MULTIPLE_PERMISSIONS)
+            return false
+        }
+        return true
     }
 
     private fun showAlertDialog() {
