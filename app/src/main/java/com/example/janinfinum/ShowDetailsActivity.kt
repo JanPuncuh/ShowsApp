@@ -50,8 +50,6 @@ class ShowDetailsActivity : AppCompatActivity() {
         binding.showDetailDesc.text = desc
         binding.showDetailImage.setImageResource(img)
 
-        supportActionBar?.hide()
-
         binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
         binding.ratingBar.rating = averageRating(reviews)
 
@@ -105,6 +103,7 @@ class ShowDetailsActivity : AppCompatActivity() {
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(this)
         binding.recyclerVewReviews.adapter = adapter
+
     }
 
     private fun addReview(review: Review) {

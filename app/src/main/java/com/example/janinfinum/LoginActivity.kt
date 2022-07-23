@@ -23,19 +23,12 @@ class LoginActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        var showPassword = false
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //starts shows activity
         binding.loginButton.setOnClickListener {
-
-            val substring = binding.editTextEmailAddress.text.toString().substringBefore('@')
-
-            val sendNameIntent = Intent(this, WelcomeActivity::class.java).apply {
-                putExtra(EXTRA_USERNAME, substring)
-            }
-            startActivity(sendNameIntent)
+            startActivity(ShowsActivity.buildIntent(this))
         }
 
         //checks validation of email
