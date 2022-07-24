@@ -9,12 +9,12 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
@@ -26,13 +26,12 @@ import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlin.system.exitProcess
-import androidx.core.app.ActivityCompat
 
 
 class ShowsActivity : Fragment() {
 
     private lateinit var bottomSheetBinding: ManageProfileBottomsheetLayoutBinding
-    private val REQUEST_ID_MULTIPLE_PERMISSIONS = 7
+    private val REQUEST_ID = 7
     private lateinit var getContent: ActivityResultLauncher<Intent>
     private lateinit var email: String
     private val shows = listOf(
@@ -64,12 +63,18 @@ class ShowsActivity : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        //here is what happens to picture
+        //when photo is taken
         getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-
                 val takenPhoto = result.data?.extras?.get("data")
-                bottomSheetBinding.profilePicture.setImageBitmap(takenPhoto as Bitmap?)
+
+                //sets both images and saves it on phone's storage
+                if (takenPhoto != null) {
+                    bottomSheetBinding.profilePicture.setImageBitmap(takenPhoto as Bitmap?)
+                    binding.imageLogout.setImageBitmap(takenPhoto as Bitmap)
+
+                    ImageSaver(context).setFileName("myImage.png").setDirectoryName("images").save(takenPhoto)
+                }
             }
         }
     }
@@ -78,6 +83,12 @@ class ShowsActivity : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initShowsRecycler()
+
+        //sets profile picture
+        val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
+        if (bitmap != null) {
+            binding.imageLogout.setImageBitmap(bitmap)
+        }
 
         if (shows.isNotEmpty()) {
             binding.emptyStateText.isVisible = false
@@ -119,6 +130,11 @@ class ShowsActivity : Fragment() {
         bottomSheetBinding = ManageProfileBottomsheetLayoutBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
 
+        val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
+        if (bitmap != null) {
+            bottomSheetBinding.profilePicture.setImageBitmap(bitmap)
+        }
+
         email = arguments?.getString(LoginActivity.EMAIL).toString()
         bottomSheetBinding.userMail.text = email
 
@@ -136,24 +152,6 @@ class ShowsActivity : Fragment() {
         dialog.show()
     }
 
-    fun openCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        getContent.launch(intent) // zagon druge aktivnosti
-    }
-
-    private fun checkAndRequestPermissions(): Boolean {
-        val camera = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA)
-        val listPermissionsNeeded: MutableList<String> = ArrayList()
-        if (camera != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA)
-        }
-        if (listPermissionsNeeded.isNotEmpty()) {
-            ActivityCompat.requestPermissions(requireActivity(), listPermissionsNeeded.toTypedArray(), REQUEST_ID_MULTIPLE_PERMISSIONS)
-            return false
-        }
-        return true
-    }
-
     private fun showAlertDialog() {
         val alertDialogBuilder = AlertDialog.Builder(requireActivity())
         alertDialogBuilder.setTitle("Are you sure?")
@@ -169,10 +167,28 @@ class ShowsActivity : Fragment() {
         }
 
         alertDialogBuilder.setNegativeButton(android.R.string.no) { dialog, which ->
-            //cancels the logout
+            //does nothing (cancels the logout)
         }
 
         alertDialogBuilder.show()
+    }
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        getContent.launch(intent)
+    }
+
+    private fun checkAndRequestPermissions(): Boolean {
+        val camera = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA)
+        val listPermissionsNeeded: MutableList<String> = ArrayList()
+        if (camera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA)
+        }
+        if (listPermissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(requireActivity(), listPermissionsNeeded.toTypedArray(), REQUEST_ID)
+            return false
+        }
+        return true
     }
 
 }
