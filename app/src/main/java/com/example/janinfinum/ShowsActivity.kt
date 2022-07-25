@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -20,6 +21,7 @@ import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
@@ -34,6 +36,7 @@ class ShowsActivity : Fragment() {
     private val REQUEST_ID = 7
     private lateinit var getContent: ActivityResultLauncher<Intent>
     private lateinit var email: String
+
     private val shows = listOf(
         Show(
             "The Office",
@@ -48,6 +51,8 @@ class ShowsActivity : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: ShowsAdapter
+
+    private val viewModel by viewModels<ShowsViewModel>()
 
     companion object {
         const val TITLE_ARG = "TITLE_ARG"
@@ -81,6 +86,10 @@ class ShowsActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.showLiveData.observe(viewLifecycleOwner) { show ->
+            //Toast.makeText(requireContext(), show.size.toString(), Toast.LENGTH_SHORT).show()
+        }
 
         initShowsRecycler()
 
