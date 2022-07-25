@@ -2,11 +2,12 @@ package com.example.janinfinum
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ShowFrameLayoutBinding
 
 class ShowsAdapter(
-    private val items: List<Show>,
+    private val items: LiveData<List<Show>>,
     private val onItemClickCallback: (Show) -> Unit
 ) : RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
@@ -27,10 +28,10 @@ class ShowsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items.value?.get(position)!!)
     }
 
     override fun getItemCount(): Int {
-        return items.count()
+        return items.value?.count()!!
     }
 }

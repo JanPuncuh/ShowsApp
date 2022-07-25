@@ -16,11 +16,11 @@ class ShowsViewModel : ViewModel() {
         Show("Krv Nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.krv_nije_voda_1),
     )
 
-    private val _showLiveData = MutableLiveData<List<Show>>()
-    val showLiveData:LiveData<List<Show>> = _showLiveData
+    private val _shows = MutableLiveData<List<Show>>()
+    val shows:LiveData<List<Show>> = _shows
 
     init {
-        _showLiveData.value = showsList
+        _shows.value = showsList
     }
 
 }

@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -37,7 +36,7 @@ class ShowsActivity : Fragment() {
     private lateinit var getContent: ActivityResultLauncher<Intent>
     private lateinit var email: String
 
-    private val shows = listOf(
+    /*private val shows = listOf(
         Show(
             "The Office",
             "The Office is an American mockumentary sitcom television series that depicts the everyday work lives of office employees in the Scranton, Pennsylvania, branch of the fictional Dunder Mifflin Paper Company. It aired on NBC from March 24, 2005, to May 16, 2013, lasting a total of nine seasons.",
@@ -45,7 +44,7 @@ class ShowsActivity : Fragment() {
         ),
         Show("Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things),
         Show("Krv Nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.krv_nije_voda_1),
-    )
+    )*/
 
     private var _binding: ActivityShowsBinding? = null
     private val binding get() = _binding!!
@@ -87,7 +86,7 @@ class ShowsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.showLiveData.observe(viewLifecycleOwner) { show ->
+        viewModel.shows.observe(viewLifecycleOwner) { show ->
             //Toast.makeText(requireContext(), show.size.toString(), Toast.LENGTH_SHORT).show()
         }
 
@@ -99,7 +98,7 @@ class ShowsActivity : Fragment() {
             binding.imageLogout.setImageBitmap(bitmap)
         }
 
-        if (shows.isNotEmpty()) {
+        if (viewModel.shows.value?.isNotEmpty()!!) {
             binding.emptyStateText.isVisible = false
             binding.emptyStateImageBackground.isVisible = false
             binding.emptyStateImageForeground.isVisible = false
@@ -117,7 +116,7 @@ class ShowsActivity : Fragment() {
 
     private fun initShowsRecycler() {
         //click on item in recycler view
-        adapter = ShowsAdapter(shows) { show ->
+        adapter = ShowsAdapter(viewModel.shows) { show ->
             val title = show.title
             val desc = show.description
             val img = show.imageResourceId
