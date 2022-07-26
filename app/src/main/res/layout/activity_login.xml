@@ -82,6 +82,7 @@
         android:id="@+id/textViewLoginSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="@dimen/margin_start"
         android:text="@string/LoginDescription"
         android:textColor="@color/white"

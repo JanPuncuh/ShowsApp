@@ -15,6 +15,7 @@ import android.text.Editable
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 
 
 class LoginActivity : Fragment() {
@@ -40,6 +41,12 @@ class LoginActivity : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+
+        val registred = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
+        if (registred != null && registred == true) {
+            binding.textViewLoginBig.text = "Registration\nsuccessful!"
+            binding.registerButton.isVisible = false
+        }
 
         //if remember me, skip login
         if (preferences.getBoolean(REMEMBER_ME, false)) {

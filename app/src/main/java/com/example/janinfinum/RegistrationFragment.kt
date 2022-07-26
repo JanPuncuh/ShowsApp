@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
+import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
 import com.example.janinfinum.databinding.RegistrationFragmentBinding
 
@@ -14,6 +16,10 @@ class RegistrationFragment : Fragment() {
 
     private var _binding: RegistrationFragmentBinding? = null
     private val binding get() = _binding!!
+
+    companion object {
+        const val REGISTER_SUCCESS = "REGISTER_SUCCESS"
+    }
 
     private lateinit var viewModel: RegistrationViewModel
 
@@ -33,8 +39,9 @@ class RegistrationFragment : Fragment() {
             enableRegisterButton()
         }
 
-        binding.registerButton.setOnClickListener() {
-            //todo
+        binding.registerButton.setOnClickListener {
+            findNavController().navigate(R.id.action_registrationFragment_to_loginActivity,
+                bundleOf(REGISTER_SUCCESS to true))
         }
     }
 
@@ -45,10 +52,6 @@ class RegistrationFragment : Fragment() {
             }
         }
         return false
-    }
-
-    private fun enableButton() {
-        binding.registerButton.isEnabled = true
     }
 
     private fun emailValidate(email: String): Boolean {
