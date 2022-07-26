@@ -45,8 +45,9 @@ class ShowDetailsActivity : Fragment() {
         binding.showDetailDesc.text = viewModel.desc.value
         binding.showDetailImage.setImageResource(viewModel.img.value!!)
 
+        viewModel.averageRating(viewModel.reviews.value!!)
+
         viewModel.avg.observe(viewLifecycleOwner) {
-            viewModel.averageRating(viewModel.reviews.value!!)
             binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
             binding.ratingBar.rating = it.absoluteValue
         }
@@ -107,8 +108,9 @@ class ShowDetailsActivity : Fragment() {
         adapter.addItem(review)
         //viewModel.reviews.value!!.add(review)
 
+        viewModel.averageRating(viewModel.reviews.value!!)
+
         viewModel.avg.observe(viewLifecycleOwner) {
-            viewModel.averageRating(viewModel.reviews.value!!)
             binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
             Log.d("TEST", it.absoluteValue.toString())
         }
@@ -125,8 +127,8 @@ class ShowDetailsActivity : Fragment() {
     }
 
     private fun updateRatings() {
+        viewModel.averageRating(viewModel.reviews.value!!)
         viewModel.avg.observe(viewLifecycleOwner) {
-            viewModel.averageRating(viewModel.reviews.value!!)
             binding.ratingBar.rating = it.absoluteValue
         }
     }

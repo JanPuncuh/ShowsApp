@@ -41,6 +41,7 @@ class ShowDetailsViewModel : ViewModel() {
         }
         rating /= list.count()
         _avg.value = rating
+        return
     }
 
 }
