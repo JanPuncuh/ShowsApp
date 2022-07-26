@@ -15,6 +15,7 @@ import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
 
@@ -42,8 +43,8 @@ class ShowDetailsActivity : Fragment() {
         binding.showDetailImage.setImageResource(img!!)
 
         binding.textViewReviews.text =
-            resources.getString(R.string.reviewsExtra, averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
-        binding.ratingBar.rating = averageRating(viewModel.reviews.value!!)
+            resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
+        binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
 
         if (viewModel.reviews.value?.isEmpty()!!) {
             binding.recyclerVewReviews.isVisible = false
@@ -101,7 +102,7 @@ class ShowDetailsActivity : Fragment() {
         adapter.addItem(review)
         //viewModel.reviews.value!!.add(review)
         binding.textViewReviews.text =
-            resources.getString(R.string.reviewsExtra, averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
+            resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
 
         if (viewModel.reviews.value!!.isEmpty()) {
             binding.textViewReviews.text = resources.getString(R.string.reviews)
@@ -114,18 +115,7 @@ class ShowDetailsActivity : Fragment() {
 
     }
 
-    private fun averageRating(list: List<DetailsItem>): Float {
-        var rating = 0F
-        list.forEach { review ->
-            if (review is Review) {
-                rating += review.rating
-            }
-        }
-        rating /= list.count()
-        return rating
-    }
-
     private fun updateRatings() {
-        binding.ratingBar.rating = averageRating(viewModel.reviews.value!!)
+        binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
     }
 }

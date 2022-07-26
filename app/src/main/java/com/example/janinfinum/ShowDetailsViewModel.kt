@@ -27,4 +27,13 @@ class ShowDetailsViewModel : ViewModel() {
         _reviews.value = reviewsList
     }
 
+    fun averageRating(list: ArrayList<Review>): Float {
+        var rating = 0F
+        list.forEach { review ->
+            rating += review.rating
+        }
+        rating /= list.count()
+        return rating
+    }
+
 }
