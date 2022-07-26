@@ -15,7 +15,7 @@ class ShowDetailsViewModel : ViewModel() {
     private val _img = MutableLiveData<Int>()
     val img: LiveData<Int> = _img
 
-    fun setShowDetails(title:String, desc:String, img:Int) {
+    fun setShowDetails(title: String, desc: String, img: Int) {
         _title.value = title
         _desc.value = desc
         _img.value = img
