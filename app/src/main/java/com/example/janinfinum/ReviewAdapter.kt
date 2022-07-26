@@ -50,7 +50,6 @@ class ReviewAdapter(
     }
 
     fun addItem(review: Review) {
-        //items = items + review
         items.value?.add(review)
         notifyItemInserted(items.value!!.lastIndex)
     }

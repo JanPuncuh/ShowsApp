@@ -3,7 +3,6 @@ package com.example.janinfinum
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 
 class ShowDetailsViewModel : ViewModel() {
 
@@ -16,9 +15,13 @@ class ShowDetailsViewModel : ViewModel() {
     private val _img = MutableLiveData<Int>()
     val img: LiveData<Int> = _img
 
+    fun setShowDetails(title:String, desc:String, img:Int) {
+        _title.value = title
+        _desc.value = desc
+        _img.value = img
+    }
 
     private var reviewsList = ArrayList<Review>()
-
 
     private val _reviews = MutableLiveData<ArrayList<Review>>()
     val reviews: LiveData<ArrayList<Review>> = _reviews

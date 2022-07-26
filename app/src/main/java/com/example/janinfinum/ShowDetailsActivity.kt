@@ -15,7 +15,6 @@ import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
 
@@ -38,13 +37,17 @@ class ShowDetailsActivity : Fragment() {
         val desc = arguments?.getString(DESC_ARG)
         val img = arguments?.getInt(IMG_ARG)
 
-        binding.showDetailTitle.title = title
-        binding.showDetailDesc.text = desc
-        binding.showDetailImage.setImageResource(img!!)
+        viewModel.setShowDetails(title!!, desc!!,img!!)
 
-        binding.textViewReviews.text =
-            resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
-        binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
+        binding.showDetailTitle.title = viewModel.title.value
+        binding.showDetailDesc.text = viewModel.desc.value
+        binding.showDetailImage.setImageResource(viewModel.img.value!!)
+
+        viewModel.reviews.observe(viewLifecycleOwner) { review ->
+            binding.textViewReviews.text =
+                resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
+            binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
+        }
 
         if (viewModel.reviews.value?.isEmpty()!!) {
             binding.recyclerVewReviews.isVisible = false

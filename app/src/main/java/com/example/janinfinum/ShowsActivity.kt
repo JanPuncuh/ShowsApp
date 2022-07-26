@@ -76,10 +76,6 @@ class ShowsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*viewModel.shows.observe(viewLifecycleOwner) { show ->
-            //Toast.makeText(requireContext(), show.size.toString(), Toast.LENGTH_SHORT).show()
-        }*/
-
         initShowsRecycler()
 
         //sets profile picture
