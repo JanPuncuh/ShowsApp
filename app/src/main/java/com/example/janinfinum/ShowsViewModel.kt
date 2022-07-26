@@ -17,7 +17,7 @@ class ShowsViewModel : ViewModel() {
     )
 
     private val _shows = MutableLiveData<List<Show>>()
-    val shows:LiveData<List<Show>> = _shows
+    val shows: LiveData<List<Show>> = _shows
 
     init {
         _shows.value = showsList

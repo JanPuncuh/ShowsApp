@@ -36,16 +36,6 @@ class ShowsActivity : Fragment() {
     private lateinit var getContent: ActivityResultLauncher<Intent>
     private lateinit var email: String
 
-    /*private val shows = listOf(
-        Show(
-            "The Office",
-            "The Office is an American mockumentary sitcom television series that depicts the everyday work lives of office employees in the Scranton, Pennsylvania, branch of the fictional Dunder Mifflin Paper Company. It aired on NBC from March 24, 2005, to May 16, 2013, lasting a total of nine seasons.",
-            R.drawable.ic_office
-        ),
-        Show("Stranger Things", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.ic_stranger_things),
-        Show("Krv Nije Voda", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor", R.drawable.krv_nije_voda_1),
-    )*/
-
     private var _binding: ActivityShowsBinding? = null
     private val binding get() = _binding!!
 
@@ -86,9 +76,9 @@ class ShowsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.shows.observe(viewLifecycleOwner) { show ->
+        /*viewModel.shows.observe(viewLifecycleOwner) { show ->
             //Toast.makeText(requireContext(), show.size.toString(), Toast.LENGTH_SHORT).show()
-        }
+        }*/
 
         initShowsRecycler()
 
@@ -152,15 +142,14 @@ class ShowsActivity : Fragment() {
             }
         }
 
-        //exits application
         bottomSheetBinding.logoutButton.setOnClickListener {
-            showAlertDialog()
+            showExitAppAlertDialog()
         }
 
         dialog.show()
     }
 
-    private fun showAlertDialog() {
+    private fun showExitAppAlertDialog() {
         val alertDialogBuilder = AlertDialog.Builder(requireActivity())
         alertDialogBuilder.setTitle("Are you sure?")
         alertDialogBuilder.setMessage("Are you sure you want to log out?")

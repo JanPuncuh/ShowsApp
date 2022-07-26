@@ -16,7 +16,6 @@ import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-
 class ShowDetailsActivity : Fragment() {
 
     private var _binding: ActivityShowDetailsBinding? = null
@@ -47,7 +46,7 @@ class ShowDetailsActivity : Fragment() {
         binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
         binding.ratingBar.rating = averageRating(reviews)
 
-        if (reviews.isEmpty()) {
+        if (viewModel.reviews.value?.isEmpty()!!) {
             binding.recyclerVewReviews.isVisible = false
             binding.ratingBar.isVisible = false
             binding.textViewReviews.text = resources.getString(R.string.reviews)
@@ -91,7 +90,7 @@ class ShowDetailsActivity : Fragment() {
 
     private fun initReviewRecycler() {
         //click on item in recycler view
-        adapter = ReviewAdapter(reviews) {
+        adapter = ReviewAdapter(viewModel.reviews) {
 
         }
 
