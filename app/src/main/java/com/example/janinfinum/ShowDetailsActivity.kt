@@ -25,8 +25,6 @@ class ShowDetailsActivity : Fragment() {
 
     private lateinit var adapter: ReviewAdapter
 
-    private var reviews = mutableListOf<DetailsItem>()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,8 +41,9 @@ class ShowDetailsActivity : Fragment() {
         binding.showDetailDesc.text = desc
         binding.showDetailImage.setImageResource(img!!)
 
-        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
-        binding.ratingBar.rating = averageRating(reviews)
+        binding.textViewReviews.text =
+            resources.getString(R.string.reviewsExtra, averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
+        binding.ratingBar.rating = averageRating(viewModel.reviews.value!!)
 
         if (viewModel.reviews.value?.isEmpty()!!) {
             binding.recyclerVewReviews.isVisible = false
@@ -100,14 +99,14 @@ class ShowDetailsActivity : Fragment() {
 
     private fun addReview(review: Review) {
         adapter.addItem(review)
-        reviews.add(review)
-        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
+        //viewModel.reviews.value!!.add(review)
+        binding.textViewReviews.text =
+            resources.getString(R.string.reviewsExtra, averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
 
-        if (reviews.isEmpty()) {
+        if (viewModel.reviews.value!!.isEmpty()) {
             binding.textViewReviews.text = resources.getString(R.string.reviews)
         }
-
-        if (reviews.isNotEmpty()) {
+        else if (viewModel.reviews.value!!.isNotEmpty()) {
             binding.recyclerVewReviews.isVisible = true
             binding.ratingBar.isVisible = true
             binding.emptyStateText.isVisible = false
@@ -127,6 +126,6 @@ class ShowDetailsActivity : Fragment() {
     }
 
     private fun updateRatings() {
-        binding.ratingBar.rating = averageRating(reviews)
+        binding.ratingBar.rating = averageRating(viewModel.reviews.value!!)
     }
 }
