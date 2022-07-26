@@ -1,6 +1,7 @@
 package com.example.janinfinum
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
 
@@ -37,16 +39,16 @@ class ShowDetailsActivity : Fragment() {
         val desc = arguments?.getString(DESC_ARG)
         val img = arguments?.getInt(IMG_ARG)
 
-        viewModel.setShowDetails(title!!, desc!!,img!!)
+        viewModel.setShowDetails(title!!, desc!!, img!!)
 
         binding.showDetailTitle.title = viewModel.title.value
         binding.showDetailDesc.text = viewModel.desc.value
         binding.showDetailImage.setImageResource(viewModel.img.value!!)
 
-        viewModel.reviews.observe(viewLifecycleOwner) { review ->
-            binding.textViewReviews.text =
-                resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
-            binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
+        viewModel.avg.observe(viewLifecycleOwner) {
+            viewModel.averageRating(viewModel.reviews.value!!)
+            binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+            binding.ratingBar.rating = it.absoluteValue
         }
 
         if (viewModel.reviews.value?.isEmpty()!!) {
@@ -104,8 +106,12 @@ class ShowDetailsActivity : Fragment() {
     private fun addReview(review: Review) {
         adapter.addItem(review)
         //viewModel.reviews.value!!.add(review)
-        binding.textViewReviews.text =
-            resources.getString(R.string.reviewsExtra, viewModel.averageRating(viewModel.reviews.value!!), viewModel.reviews.value!!.size)
+
+        viewModel.avg.observe(viewLifecycleOwner) {
+            viewModel.averageRating(viewModel.reviews.value!!)
+            binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+            Log.d("TEST", it.absoluteValue.toString())
+        }
 
         if (viewModel.reviews.value!!.isEmpty()) {
             binding.textViewReviews.text = resources.getString(R.string.reviews)
@@ -119,6 +125,9 @@ class ShowDetailsActivity : Fragment() {
     }
 
     private fun updateRatings() {
-        binding.ratingBar.rating = viewModel.averageRating(viewModel.reviews.value!!)
+        viewModel.avg.observe(viewLifecycleOwner) {
+            viewModel.averageRating(viewModel.reviews.value!!)
+            binding.ratingBar.rating = it.absoluteValue
+        }
     }
 }

@@ -30,13 +30,17 @@ class ShowDetailsViewModel : ViewModel() {
         _reviews.value = reviewsList
     }
 
-    fun averageRating(list: ArrayList<Review>): Float {
+    private val _avg = MutableLiveData<Float>()
+    val avg: LiveData<Float> = _avg
+
+    //sets the avg
+    fun averageRating(list: ArrayList<Review>) {
         var rating = 0F
         list.forEach { review ->
             rating += review.rating
         }
         rating /= list.count()
-        return rating
+        _avg.value = rating
     }
 
 }
