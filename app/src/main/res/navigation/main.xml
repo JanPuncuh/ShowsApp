@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_loginActivity_to_showsActivity"
             app:destination="@id/showsActivity" />
+        <action
+            android:id="@+id/action_loginActivity_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
     </fragment>
     <fragment
         android:id="@+id/showsActivity"
@@ -31,4 +34,8 @@
         android:name="com.example.janinfinum.ShowDetailsActivity"
         android:label="activity_show_details"
         tools:layout="@layout/activity_show_details" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.janinfinum.RegistrationFragment"
+        android:label="RegistrationFragment" />
 </navigation>

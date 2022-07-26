@@ -25,8 +25,8 @@ class LoginActivity : Fragment() {
     companion object {
         const val EMAIL = "EMAIL"
         const val REMEMBER_ME = "REMEMBER_ME"
-        private const val MIN_PASSWORD_LENGTH = 6
-        private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
+        const val MIN_PASSWORD_LENGTH = 6
+        val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -83,6 +83,10 @@ class LoginActivity : Fragment() {
                     bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
                 )
             }
+        }
+
+        binding.registerButton.setOnClickListener() {
+            findNavController().navigate(R.id.action_loginActivity_to_registrationFragment)
         }
 
         //checks validation of email
