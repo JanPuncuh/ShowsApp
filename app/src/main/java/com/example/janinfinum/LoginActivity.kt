@@ -1,5 +1,6 @@
 package com.example.janinfinum
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -82,6 +83,10 @@ class LoginActivity : Fragment() {
 
             val loginRequest = LoginRequest(email, password)
 
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.logging_in_layout)
+            dialog.show()
+
             ApiModule.retrofit.login(loginRequest)
                 .enqueue(object : retrofit2.Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -91,6 +96,7 @@ class LoginActivity : Fragment() {
                             app.token = response.headers()["access-token"]
                             app.client = response.headers()["client"]
                             app.uid = email
+                            app.user = response.body()?.user
 
                             //if checked at login, save email
                             if (binding.checkBox.isChecked) {
@@ -108,6 +114,7 @@ class LoginActivity : Fragment() {
                             }
 
                             //if login success, navigate to shows
+                            dialog.dismiss()
                             if (findNavController().currentDestination?.id == R.id.loginActivity) {
                                 findNavController().navigate(
                                     R.id.action_loginActivity_to_showsActivity,

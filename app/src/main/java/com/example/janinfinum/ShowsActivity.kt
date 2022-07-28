@@ -86,6 +86,8 @@ class ShowsActivity : Fragment() {
 
         ApiModule.initRetrofit(requireActivity())
 
+        showLoadingState()
+
         ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
@@ -93,6 +95,13 @@ class ShowsActivity : Fragment() {
                     viewModel.onResponseAPI(response.body()?.shows!!)
                     viewModel.shows2.observe(viewLifecycleOwner) {
                         initShowsRecycler()
+                    }
+
+                    if (viewModel.shows.value?.isNotEmpty()!!) {
+                        showNormalState()
+                    }
+                    else if (viewModel.shows.value?.isEmpty()!!) {
+                        showEmptyState()
                     }
 
                 }
@@ -109,15 +118,38 @@ class ShowsActivity : Fragment() {
             binding.imageLogout.setImageBitmap(bitmap)
         }
 
-        if (viewModel.shows.value?.isNotEmpty()!!) {
-            binding.emptyStateText.isVisible = false
-            binding.emptyStateImageBackground.isVisible = false
-            binding.emptyStateImageForeground.isVisible = false
-        }
-
         binding.imageLogout.setOnClickListener {
             showProfileDialog()
         }
+    }
+
+    private fun showEmptyState() {
+        binding.emptyStateImageForeground.isVisible = true
+        binding.emptyStateImageBackground.isVisible = true
+        binding.recycleView.isVisible = false
+        binding.showsText.isVisible = false
+        binding.loadingStateText.isVisible = false
+        binding.emptyStateText.isVisible = true
+        binding.imageLogout.isVisible = false
+    }
+
+    private fun showNormalState() {
+        binding.emptyStateImageForeground.isVisible = false
+        binding.emptyStateImageBackground.isVisible = false
+        binding.recycleView.isVisible = true
+        binding.showsText.isVisible = true
+        binding.imageLogout.isVisible = true
+        binding.emptyStateText.isVisible = false
+        binding.loadingStateText.isVisible = false
+    }
+
+    private fun showLoadingState() {
+        binding.emptyStateImageForeground.isVisible = true
+        binding.emptyStateImageBackground.isVisible = true
+        binding.recycleView.isVisible = false
+        binding.showsText.isVisible = false
+        binding.emptyStateText.isVisible = false
+        binding.imageLogout.isVisible = false
     }
 
     override fun onDestroyView() {

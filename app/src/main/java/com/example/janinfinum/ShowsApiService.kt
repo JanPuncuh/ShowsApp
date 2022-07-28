@@ -34,4 +34,12 @@ interface ShowsApiService {
         @Header("client") client: String, @Header("uid") mail: String
     ): Call<ReviewResponse>
 
+    @POST("/reviews")
+    fun postReview(
+        @Header("token-type") tokenType: String, @Header("access-token") auth: String,
+        @Header("client") client: String, @Header("uid") mail: String,
+        @Body request: ReviewRequest
+    ): Call<AddedReviewResponse>
+
+
 }

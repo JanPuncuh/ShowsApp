@@ -51,6 +51,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.5.0"
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
     implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"

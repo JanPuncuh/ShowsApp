@@ -21,6 +21,7 @@ import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
 
+    private lateinit var show: Show2
     private var _binding: ActivityShowDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -41,25 +42,23 @@ class ShowDetailsActivity : Fragment() {
 
         app = activity?.application as MyApplication
 
+        showLoadingState()
+
         ApiModule.initRetrofit(requireActivity())
 
-        /*viewModel.averageRating(viewModel.reviews.value!!)
-        viewModel.avg.observe(viewLifecycleOwner) {
-            binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
-            binding.ratingBar.rating = it.absoluteValue
-        }*/
 
         binding.button.setOnClickListener() {
             showWriteNewReviewDialog()
         }
 
-        //todo api
+        //gets show's details
         ApiModule.retrofit.getShow(id, "Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
                 override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
 
                     if (response.isSuccessful) {
-                        val show = response.body()?.show2!!
+
+                        show = response.body()?.show2!!
 
                         viewModel.setShowDetails(show.title, show.description!!, show.imageUrl)
 
@@ -68,16 +67,10 @@ class ShowDetailsActivity : Fragment() {
                         Picasso.get().load(show.imageUrl).into(binding.showDetailImage)
                         binding.ratingBar.rating = show.averageRating!!
 
-                        /*viewModel.onResponseAPI(response.body()?.shows!!)
-                        viewModel.shows2.observe(viewLifecycleOwner) {
-                            initShowsRecycler()
-                        }*/
-
+                        //fetch reviews
                         ApiModule.retrofit.getReviews(id, "Bearer", app.token!!, app.client!!, app.uid!!)
                             .enqueue(object : retrofit2.Callback<ReviewResponse> {
                                 override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
-
-                                    Toast.makeText(requireActivity(), "test", Toast.LENGTH_SHORT).show()
 
                                     if (response.isSuccessful) {
 
@@ -86,11 +79,25 @@ class ShowDetailsActivity : Fragment() {
                                             initReviewRecycler()
                                         }
 
+                                        viewModel.averageRating(viewModel.reviews.value!!)
+                                        viewModel.avg.observe(viewLifecycleOwner) {
+                                            binding.textViewReviews.text =
+                                                resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+                                            binding.ratingBar.rating = it.absoluteValue
+                                        }
+
                                         if (viewModel.reviews.value?.isEmpty()!!) {
                                             binding.recyclerVewReviews.isVisible = false
                                             binding.ratingBar.isVisible = false
                                             binding.textViewReviews.text = resources.getString(R.string.reviews)
                                         }
+
+                                        if (viewModel.reviews.value?.isNotEmpty()!!) {
+                                            binding.emptyStateText.isVisible = false
+                                        }
+
+                                        showNormalState()
+
                                     }
                                     else {
                                         Log.d("TEST", "respone not successful")
@@ -100,6 +107,8 @@ class ShowDetailsActivity : Fragment() {
 
                                 override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
                                     Log.d("TEST", "${t.message.toString()}\n${t.printStackTrace()}")
+                                    //todo display to user
+                                    Toast.makeText(requireActivity(), "Failed to load reviews", Toast.LENGTH_SHORT).show()
                                 }
                             })
                     }
@@ -110,6 +119,31 @@ class ShowDetailsActivity : Fragment() {
                 }
 
             })
+    }
+
+    private fun showLoadingState() {
+        binding.recyclerVewReviews.isVisible = false
+        binding.emptyStateText.isVisible = false
+        binding.textViewReviews.isVisible = false
+        binding.ratingBar.isVisible = false
+        binding.button.isVisible = false
+        binding.showDetailDesc.isVisible = false
+        binding.showDetailImage.isVisible = false
+        binding.showDetailTitle.isVisible = false
+    }
+
+    private fun showNormalState() {
+        binding.recyclerVewReviews.isVisible = true
+        binding.emptyStateText.isVisible = true
+        binding.textViewReviews.isVisible = true
+        binding.ratingBar.isVisible = true
+        binding.button.isVisible = true
+        binding.showDetailDesc.isVisible = true
+        binding.showDetailImage.isVisible = true
+        binding.showDetailTitle.isVisible = true
+
+        binding.loadingStateGif.isVisible = false
+        binding.loadingTextState.isVisible = false
     }
 
     private fun showWriteNewReviewDialog() {
@@ -130,9 +164,9 @@ class ShowDetailsActivity : Fragment() {
                 return@setOnClickListener
             }
 
-            //val newReview = Review("addedReview", reviewComment, rating, R.drawable.ic_profile_placeholder)
-            //addReview(newReview)
-            //updateRatings()
+            //review
+            val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, show.id.toInt())
+            addReview2(reviewRequest)
 
             dialog.dismiss()
         }
@@ -150,15 +184,33 @@ class ShowDetailsActivity : Fragment() {
         binding.recyclerVewReviews.adapter = adapter
     }
 
-    private fun addReview(review: Review2) {
-        adapter.addItem(review)
-        //viewModel.reviews.value!!.add(review)
+    private fun addReview2(reviewRequest: ReviewRequest) {
+        ApiModule.retrofit.postReview("Bearer", app.token!!, app.client!!, app.uid!!, reviewRequest)
+            .enqueue(object : retrofit2.Callback<AddedReviewResponse> {
+                override fun onResponse(call: Call<AddedReviewResponse>, response: Response<AddedReviewResponse>) {
 
+                    val review = response.body()?.review
+
+                    if (review != null) {
+                        adapter.addItem(review)
+                    }
+                    Log.d("TEST", (review == null).toString())
+
+                }
+
+                override fun onFailure(call: Call<AddedReviewResponse>, t: Throwable) {
+
+                }
+
+            })
+        updateRatings()
+    }
+
+    private fun updateRatings() {
         viewModel.averageRating(viewModel.reviews.value!!)
-
         viewModel.avg.observe(viewLifecycleOwner) {
             binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
-            Log.d("TEST", it.absoluteValue.toString())
+            binding.ratingBar.rating = it.absoluteValue
         }
 
         if (viewModel.reviews.value!!.isEmpty()) {
@@ -168,14 +220,6 @@ class ShowDetailsActivity : Fragment() {
             binding.recyclerVewReviews.isVisible = true
             binding.ratingBar.isVisible = true
             binding.emptyStateText.isVisible = false
-        }
-
-    }
-
-    private fun updateRatings() {
-        viewModel.averageRating(viewModel.reviews.value!!)
-        viewModel.avg.observe(viewLifecycleOwner) {
-            binding.ratingBar.rating = it.absoluteValue
         }
     }
 }
