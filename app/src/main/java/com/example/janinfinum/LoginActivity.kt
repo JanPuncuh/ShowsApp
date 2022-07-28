@@ -21,6 +21,7 @@ import kotlin.math.log
 
 class LoginActivity : Fragment() {
 
+    lateinit var app: MyApplication
     private var _binding: ActivityLoginBinding? = null
     private val binding get() = _binding!!
 
@@ -44,6 +45,7 @@ class LoginActivity : Fragment() {
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
         ApiModule.initRetrofit(requireActivity())
 
+        app = activity?.application as MyApplication
 
         val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
         if (registered != null && registered == true) {
@@ -84,6 +86,13 @@ class LoginActivity : Fragment() {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
 
                         if (response.isSuccessful) {
+
+                            Log.d("TEST", response.headers().toString())
+
+                            app.token = response.headers()["access-token"]
+                            app.client = response.headers()["client"]
+                            app.uid = email
+
                             //if checked at login, save email
                             if (binding.checkBox.isChecked) {
                                 if (!preferences.contains(EMAIL)) {

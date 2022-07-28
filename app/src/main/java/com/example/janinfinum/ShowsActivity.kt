@@ -35,6 +35,7 @@ import kotlin.system.exitProcess
 
 class ShowsActivity : Fragment() {
 
+    lateinit var app: MyApplication
     private lateinit var bottomSheetBinding: ManageProfileBottomsheetLayoutBinding
     private val REQUEST_ID = 7
     private lateinit var getContent: ActivityResultLauncher<Intent>
@@ -82,11 +83,11 @@ class ShowsActivity : Fragment() {
 
         //initShowsRecycler()
 
+        app = activity?.application as MyApplication
+
         ApiModule.initRetrofit(requireActivity())
 
-        //todo replace hardcoded shit
-        val token = "He9gzhsx-ZL0FsdxOuGNbg"
-        ApiModule.retrofit.getShows("Bearer", token, "GxOlbqZ_SKj9KXiHqNzz8g", "test2@testi.si")
+        ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
 
