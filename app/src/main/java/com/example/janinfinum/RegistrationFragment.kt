@@ -1,16 +1,19 @@
 package com.example.janinfinum
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.janinfinum.databinding.ActivityLoginBinding
 import com.example.janinfinum.databinding.RegistrationFragmentBinding
+import retrofit2.Call
+import retrofit2.Response
+import javax.security.auth.callback.Callback
 
 class RegistrationFragment : Fragment() {
 
@@ -21,7 +24,7 @@ class RegistrationFragment : Fragment() {
         const val REGISTER_SUCCESS = "REGISTER_SUCCESS"
     }
 
-    private lateinit var viewModel: RegistrationViewModel
+    private val viewModel by viewModels<RegistrationViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
@@ -30,6 +33,8 @@ class RegistrationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ApiModule.initRetrofit(requireActivity())
 
         binding.editTextPassword.doAfterTextChanged {
             enableRegisterButton()
@@ -40,8 +45,35 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.registerButton.setOnClickListener {
-            findNavController().navigate(R.id.action_registrationFragment_to_loginActivity,
-                bundleOf(REGISTER_SUCCESS to true))
+
+            val username = binding.editTextEmailAddress.text.toString()
+            val password = binding.editTextPassword.text.toString()
+            val passwordRepeat = binding.editTextPasswordRepeat.text.toString()
+
+            val registerRequest = RegisterRequest(username, password, passwordRepeat)
+
+            ApiModule.retrofit.register(registerRequest)
+                .enqueue(object : retrofit2.Callback<RegisterResponse> {
+                    override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                        viewModel.registrationResultLiveData.value = response.isSuccessful
+
+                        if (response.isSuccessful) {
+                            val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+                            //preferences.edit().putString("TOKEN", response.)
+
+                            findNavController().navigate(
+                                R.id.action_registrationFragment_to_loginActivity,
+                                bundleOf(REGISTER_SUCCESS to true)
+                            )
+                        }
+                    }
+
+                    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                        viewModel.registrationResultLiveData.value = false
+                        return
+                    }
+
+                })
         }
     }
 

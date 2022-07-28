@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -26,6 +27,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Response
 import kotlin.system.exitProcess
 
 
@@ -77,6 +80,20 @@ class ShowsActivity : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initShowsRecycler()
+
+        ApiModule.initRetrofit(requireActivity())
+
+        val token = "17hxgn2byUpWSa5_f4jvlg"
+        ApiModule.retrofit.getShows("Bearer", token, "test2@testi.si","GxOlbqZ_SKj9KXiHqNzz8g")
+            .enqueue(object : retrofit2.Callback<ShowResponse> {
+                override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+                    Toast.makeText(requireActivity(), response.body().toString(), Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
+                    //todo
+                }
+            })
 
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
