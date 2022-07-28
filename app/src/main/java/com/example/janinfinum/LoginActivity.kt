@@ -6,16 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
-import android.content.SharedPreferences
-import android.text.Editable
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import retrofit2.Call
+import retrofit2.Response
+import kotlin.math.log
 
 
 class LoginActivity : Fragment() {
@@ -41,9 +42,11 @@ class LoginActivity : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        ApiModule.initRetrofit(requireActivity())
 
-        val registred = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
-        if (registred != null && registred == true) {
+
+        val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
+        if (registered != null && registered == true) {
             binding.textViewLoginBig.text = "Registration\nsuccessful!"
             binding.registerButton.isVisible = false
         }
@@ -53,7 +56,8 @@ class LoginActivity : Fragment() {
             val email = preferences.getString(EMAIL, "default") ?: "default"
             binding.editTextEmailAddress.setText(email)
 
-            findNavController().navigate(R.id.action_loginActivity_to_showsActivity,
+            findNavController().navigate(
+                R.id.action_loginActivity_to_showsActivity,
                 bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
             )
         }
@@ -67,29 +71,52 @@ class LoginActivity : Fragment() {
             }
         }
 
+        //LOGIN BUTTON PRESSED
         binding.loginButton.setOnClickListener {
 
-            //if checked at login, save email
-            if (binding.checkBox.isChecked) {
-                if (!preferences.contains(EMAIL)) {
-                    preferences.edit() {
-                        putString(EMAIL, binding.editTextEmailAddress.text.toString())
-                    }
-                }
-            }
-            //if unchecked at login, remove email
-            else {
-                if (preferences.contains(EMAIL)) {
-                    preferences.edit().remove(EMAIL).apply()
-                }
-            }
+            val email = binding.editTextEmailAddress.text.toString()
+            val password = binding.editTextPassword.text.toString()
 
-            if (findNavController().currentDestination?.id == R.id.loginActivity) {
-                Log.d("TEST", "navigate?")
-                findNavController().navigate(R.id.action_loginActivity_to_showsActivity,
-                    bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
-                )
-            }
+            val loginRequest = LoginRequest(email, password)
+
+            ApiModule.retrofit.login(loginRequest)
+                .enqueue(object : retrofit2.Callback<LoginResponse> {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+
+                        if (response.isSuccessful) {
+                            //if checked at login, save email
+                            if (binding.checkBox.isChecked) {
+                                if (!preferences.contains(EMAIL)) {
+                                    preferences.edit() {
+                                        putString(EMAIL, binding.editTextEmailAddress.text.toString())
+                                    }
+                                }
+                            }
+                            //if unchecked at login, remove email from storage
+                            else {
+                                if (preferences.contains(EMAIL)) {
+                                    preferences.edit().remove(EMAIL).apply()
+                                }
+                            }
+
+                            //if login success, navigate to shows
+                            if (findNavController().currentDestination?.id == R.id.loginActivity) {
+                                findNavController().navigate(
+                                    R.id.action_loginActivity_to_showsActivity,
+                                    bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
+                                )
+                            }
+                        }
+                        else if (!response.isSuccessful) {
+                            Toast.makeText(requireActivity(), "Login Unsuccessful\nCheck your email and password", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
+                    }
+
+                })
         }
 
         binding.registerButton.setOnClickListener() {

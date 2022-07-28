@@ -9,10 +9,8 @@ interface ShowsApiService {
     @POST("/users")
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
-
     @POST("/users/sign_in")
-    fun signIn(@Body request: RegisterRequest): Call<RegisterResponse>
-
+    fun login(@Body request: LoginRequest): Call<LoginResponse>
 
     //shows
     @GET("/shows")

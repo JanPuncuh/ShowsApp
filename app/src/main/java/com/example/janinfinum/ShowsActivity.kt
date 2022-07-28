@@ -89,9 +89,6 @@ class ShowsActivity : Fragment() {
         ApiModule.retrofit.getShows("Bearer", token, "GxOlbqZ_SKj9KXiHqNzz8g", "test2@testi.si")
             .enqueue(object : retrofit2.Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-                    Toast.makeText(requireActivity(), "tuki", Toast.LENGTH_SHORT).show()
-
-                    Log.d("TEST", "dela?")
 
                     viewModel.onResponseAPI(response.body()?.shows!!)
                     viewModel.shows2.observe(viewLifecycleOwner) {

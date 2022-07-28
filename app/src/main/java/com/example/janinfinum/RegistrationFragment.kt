@@ -46,11 +46,11 @@ class RegistrationFragment : Fragment() {
 
         binding.registerButton.setOnClickListener {
 
-            val username = binding.editTextEmailAddress.text.toString()
+            val email = binding.editTextEmailAddress.text.toString()
             val password = binding.editTextPassword.text.toString()
             val passwordRepeat = binding.editTextPasswordRepeat.text.toString()
 
-            val registerRequest = RegisterRequest(username, password, passwordRepeat)
+            val registerRequest = RegisterRequest(email, password, passwordRepeat)
 
             ApiModule.retrofit.register(registerRequest)
                 .enqueue(object : retrofit2.Callback<RegisterResponse> {
