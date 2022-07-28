@@ -8,7 +8,4 @@ class MyApplication : Application() {
     var uid: String? = null
     var client: String? = null
 
-    override fun onCreate() {
-        super.onCreate()
-    }
 }

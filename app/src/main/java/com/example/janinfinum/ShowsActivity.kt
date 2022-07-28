@@ -49,6 +49,7 @@ class ShowsActivity : Fragment() {
     private val viewModel by viewModels<ShowsViewModel>()
 
     companion object {
+        const val ID = "ID"
         const val TITLE_ARG = "TITLE_ARG"
         const val DESC_ARG = "DESC_ARG"
         const val IMG_ARG = "IMG_ARG"
@@ -80,8 +81,6 @@ class ShowsActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //initShowsRecycler()
 
         app = activity?.application as MyApplication
 
@@ -132,10 +131,11 @@ class ShowsActivity : Fragment() {
             val title = show.title
             val desc = show.description
             val img = show.imageUrl
+            val id = show.id
 
             findNavController().navigate(
                 R.id.action_showsActivity_to_showDetailsActivity,
-                bundleOf(TITLE_ARG to title, DESC_ARG to desc, IMG_ARG to img)
+                bundleOf(ID to id, TITLE_ARG to title, DESC_ARG to desc, IMG_ARG to img)
             )
         }
 

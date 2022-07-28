@@ -20,7 +20,11 @@ interface ShowsApiService {
     ): Call<ShowResponse>
 
     @GET("/shows/{id}")
-    fun getShow(@Header("Authorization") auth: String): Call<ShowResponse>
+    fun getShow(
+        @Path("id") searchById: String,
+        @Header("token-type") tokenType: String, @Header("access-token") auth: String,
+        @Header("client") client: String, @Header("uid") mail: String
+    ): Call<ShowDetailsResponse>
 
     //reviews
     @POST("/users")

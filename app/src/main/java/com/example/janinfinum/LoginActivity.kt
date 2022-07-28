@@ -53,6 +53,7 @@ class LoginActivity : Fragment() {
             binding.registerButton.isVisible = false
         }
 
+        //todo implement through API
         //if remember me, skip login
         if (preferences.getBoolean(REMEMBER_ME, false)) {
             val email = preferences.getString(EMAIL, "default") ?: "default"

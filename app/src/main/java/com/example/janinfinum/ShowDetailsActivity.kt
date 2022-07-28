@@ -11,11 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.ShowsActivity.Companion.DESC_ARG
+import com.example.janinfinum.ShowsActivity.Companion.ID
 import com.example.janinfinum.ShowsActivity.Companion.IMG_ARG
 import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Response
 import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
@@ -26,6 +30,7 @@ class ShowDetailsActivity : Fragment() {
     private val viewModel by viewModels<ShowDetailsViewModel>()
 
     private lateinit var adapter: ReviewAdapter
+    private lateinit var app: MyApplication
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
@@ -38,7 +43,9 @@ class ShowDetailsActivity : Fragment() {
         val title = arguments?.getString(TITLE_ARG)
         val desc = arguments?.getString(DESC_ARG)
         val img = arguments?.getInt(IMG_ARG)
+        val id = arguments?.getString(ID)
 
+        app = activity?.application as MyApplication
         viewModel.setShowDetails(title!!, desc!!, img!!)
 
         binding.showDetailTitle.title = viewModel.title.value
@@ -63,6 +70,29 @@ class ShowDetailsActivity : Fragment() {
         binding.button.setOnClickListener() {
             showWriteNewReviewDialog()
         }
+
+        //todo api
+        ApiModule.retrofit.getShow(id!!,"Bearer", app.token!!, app.client!!, app.uid!!)
+            .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
+                override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
+                    Log.d("TEST", "aaaa?")
+
+                    if (response.isSuccessful) {
+                        val show = response.body()?.show2!!
+
+                        Log.d("TEST", "aaaa?")
+
+                        binding.showDetailTitle.title = show.title
+                        binding.showDetailDesc.text = show.description
+                        Picasso.get().load(show.imageUrl).into(binding.showDetailImage);
+
+                    }
+                }
+
+                override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
+                }
+
+            })
 
     }
 
