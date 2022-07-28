@@ -17,8 +17,8 @@ interface ShowsApiService {
     //shows
     @GET("/shows")
     fun getShows(
-        @Header("token-type") bearer: String = "Bearer", @Header("access-token") auth: String,
-        @Header("uid") mail: String, @Header("client") client: String
+        @Header("token-type") tokenType: String, @Header("access-token") auth: String,
+        @Header("client") client: String, @Header("uid") mail: String
     ): Call<ShowResponse>
 
     @GET("/shows/{id}")

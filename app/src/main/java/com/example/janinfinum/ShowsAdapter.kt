@@ -5,16 +5,18 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ShowFrameLayoutBinding
+import com.squareup.picasso.Picasso
 
 class ShowsAdapter(
-    private val items: LiveData<List<Show>>,
-    private val onItemClickCallback: (Show) -> Unit
+    private val items: LiveData<List<Show2>>,
+    private val onItemClickCallback: (Show2) -> Unit
 ) : RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
     inner class ShowViewHolder(private val binding: ShowFrameLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Show) {
+        fun bind(item: Show2) {
             binding.showTitle.text = item.title
-            binding.showImage.setImageResource(item.imageResourceId)
+            binding.showDescription.text = item.description
+            Picasso.get().load(item.imageUrl).into(binding.showImage);
 
             binding.cardContainer.setOnClickListener {
                 onItemClickCallback(item)

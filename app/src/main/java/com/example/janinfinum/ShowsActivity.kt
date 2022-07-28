@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,19 +80,29 @@ class ShowsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initShowsRecycler()
+        //initShowsRecycler()
 
         ApiModule.initRetrofit(requireActivity())
 
-        val token = "17hxgn2byUpWSa5_f4jvlg"
-        ApiModule.retrofit.getShows("Bearer", token, "test2@testi.si","GxOlbqZ_SKj9KXiHqNzz8g")
+        //todo replace hardcoded shit
+        val token = "He9gzhsx-ZL0FsdxOuGNbg"
+        ApiModule.retrofit.getShows("Bearer", token, "GxOlbqZ_SKj9KXiHqNzz8g", "test2@testi.si")
             .enqueue(object : retrofit2.Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-                    Toast.makeText(requireActivity(), response.body().toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireActivity(), "tuki", Toast.LENGTH_SHORT).show()
+
+                    Log.d("TEST", "dela?")
+
+                    viewModel.onResponseAPI(response.body()?.shows!!)
+                    viewModel.shows2.observe(viewLifecycleOwner) {
+                        initShowsRecycler()
+                    }
+
                 }
 
                 override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
-                    //todo
+                    Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
+                    Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
                 }
             })
 
@@ -119,10 +130,10 @@ class ShowsActivity : Fragment() {
 
     private fun initShowsRecycler() {
         //click on item in recycler view
-        adapter = ShowsAdapter(viewModel.shows) { show ->
+        adapter = ShowsAdapter(viewModel.shows2) { show ->
             val title = show.title
             val desc = show.description
-            val img = show.imageResourceId
+            val img = show.imageUrl
 
             findNavController().navigate(
                 R.id.action_showsActivity_to_showDetailsActivity,
