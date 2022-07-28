@@ -10,10 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.janinfinum.ShowsActivity.Companion.DESC_ARG
 import com.example.janinfinum.ShowsActivity.Companion.ID
-import com.example.janinfinum.ShowsActivity.Companion.IMG_ARG
-import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -40,60 +37,79 @@ class ShowDetailsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val title = arguments?.getString(TITLE_ARG)
-        val desc = arguments?.getString(DESC_ARG)
-        val img = arguments?.getInt(IMG_ARG)
-        val id = arguments?.getString(ID)
+        val id = arguments?.getString(ID).toString()
 
         app = activity?.application as MyApplication
-        viewModel.setShowDetails(title!!, desc!!, img!!)
 
-        binding.showDetailTitle.title = viewModel.title.value
-        binding.showDetailDesc.text = viewModel.desc.value
-        binding.showDetailImage.setImageResource(viewModel.img.value!!)
+        ApiModule.initRetrofit(requireActivity())
 
-        viewModel.averageRating(viewModel.reviews.value!!)
-
+        /*viewModel.averageRating(viewModel.reviews.value!!)
         viewModel.avg.observe(viewLifecycleOwner) {
             binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
             binding.ratingBar.rating = it.absoluteValue
-        }
-
-        if (viewModel.reviews.value?.isEmpty()!!) {
-            binding.recyclerVewReviews.isVisible = false
-            binding.ratingBar.isVisible = false
-            binding.textViewReviews.text = resources.getString(R.string.reviews)
-        }
-
-        initReviewRecycler()
+        }*/
 
         binding.button.setOnClickListener() {
             showWriteNewReviewDialog()
         }
 
         //todo api
-        ApiModule.retrofit.getShow(id!!,"Bearer", app.token!!, app.client!!, app.uid!!)
+        ApiModule.retrofit.getShow(id, "Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
                 override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
-                    Log.d("TEST", "aaaa?")
 
                     if (response.isSuccessful) {
                         val show = response.body()?.show2!!
 
-                        Log.d("TEST", "aaaa?")
+                        viewModel.setShowDetails(show.title, show.description!!, show.imageUrl)
 
                         binding.showDetailTitle.title = show.title
                         binding.showDetailDesc.text = show.description
-                        Picasso.get().load(show.imageUrl).into(binding.showDetailImage);
+                        Picasso.get().load(show.imageUrl).into(binding.showDetailImage)
+                        binding.ratingBar.rating = show.averageRating!!
 
+                        /*viewModel.onResponseAPI(response.body()?.shows!!)
+                        viewModel.shows2.observe(viewLifecycleOwner) {
+                            initShowsRecycler()
+                        }*/
+
+                        ApiModule.retrofit.getReviews(id, "Bearer", app.token!!, app.client!!, app.uid!!)
+                            .enqueue(object : retrofit2.Callback<ReviewResponse> {
+                                override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
+
+                                    Toast.makeText(requireActivity(), "test", Toast.LENGTH_SHORT).show()
+
+                                    if (response.isSuccessful) {
+
+                                        viewModel.onResponseAPI(response.body()?.reviews)
+                                        viewModel.reviews.observe(viewLifecycleOwner) {
+                                            initReviewRecycler()
+                                        }
+
+                                        if (viewModel.reviews.value?.isEmpty()!!) {
+                                            binding.recyclerVewReviews.isVisible = false
+                                            binding.ratingBar.isVisible = false
+                                            binding.textViewReviews.text = resources.getString(R.string.reviews)
+                                        }
+                                    }
+                                    else {
+                                        Log.d("TEST", "respone not successful")
+                                    }
+
+                                }
+
+                                override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
+                                    Log.d("TEST", "${t.message.toString()}\n${t.printStackTrace()}")
+                                }
+                            })
                     }
                 }
 
                 override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
+                    //todo handle failure
                 }
 
             })
-
     }
 
     private fun showWriteNewReviewDialog() {
@@ -114,9 +130,9 @@ class ShowDetailsActivity : Fragment() {
                 return@setOnClickListener
             }
 
-            val newReview = Review("addedReview", reviewComment, rating, R.drawable.ic_profile_placeholder)
-            addReview(newReview)
-            updateRatings()
+            //val newReview = Review("addedReview", reviewComment, rating, R.drawable.ic_profile_placeholder)
+            //addReview(newReview)
+            //updateRatings()
 
             dialog.dismiss()
         }
@@ -134,7 +150,7 @@ class ShowDetailsActivity : Fragment() {
         binding.recyclerVewReviews.adapter = adapter
     }
 
-    private fun addReview(review: Review) {
+    private fun addReview(review: Review2) {
         adapter.addItem(review)
         //viewModel.reviews.value!!.add(review)
 

@@ -88,8 +88,6 @@ class LoginActivity : Fragment() {
 
                         if (response.isSuccessful) {
 
-                            Log.d("TEST", response.headers().toString())
-
                             app.token = response.headers()["access-token"]
                             app.client = response.headers()["client"]
                             app.uid = email

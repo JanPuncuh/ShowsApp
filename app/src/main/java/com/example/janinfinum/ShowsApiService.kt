@@ -27,7 +27,11 @@ interface ShowsApiService {
     ): Call<ShowDetailsResponse>
 
     //reviews
-    @POST("/users")
-    fun postReview(@Body request: ReviewRequest): Call<ReviewResponse>
+    @GET("/shows/{id}/reviews")
+    fun getReviews(
+        @Path("id") searchById: String,
+        @Header("token-type") tokenType: String, @Header("access-token") auth: String,
+        @Header("client") client: String, @Header("uid") mail: String
+    ): Call<ReviewResponse>
 
 }

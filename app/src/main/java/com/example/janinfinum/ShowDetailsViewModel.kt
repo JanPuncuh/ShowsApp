@@ -12,36 +12,37 @@ class ShowDetailsViewModel : ViewModel() {
     private val _desc = MutableLiveData<String>()
     val desc: LiveData<String> = _desc
 
-    private val _img = MutableLiveData<Int>()
-    val img: LiveData<Int> = _img
+    private val _img = MutableLiveData<String>()
+    val img: LiveData<String> = _img
 
-    fun setShowDetails(title: String, desc: String, img: Int) {
+    fun setShowDetails(title: String, desc: String, img: String) {
         _title.value = title
         _desc.value = desc
         _img.value = img
     }
 
-    private var reviewsList = ArrayList<Review>()
+    private val _reviews = MutableLiveData<ArrayList<Review2>>()
+    var reviews: LiveData<ArrayList<Review2>> = _reviews
 
-    private val _reviews = MutableLiveData<ArrayList<Review>>()
-    val reviews: LiveData<ArrayList<Review>> = _reviews
-
-    init {
-        _reviews.value = reviewsList
-    }
+    //init {}
 
     private val _avg = MutableLiveData<Float>()
     val avg: LiveData<Float> = _avg
 
     //sets the avg
-    fun averageRating(list: ArrayList<Review>) {
+    fun averageRating(list: ArrayList<Review2>) {
         var rating = 0F
         list.forEach { review ->
-            rating += review.rating
+            rating += review.rating!!
         }
         rating /= list.count()
         _avg.value = rating
         return
+    }
+
+    fun onResponseAPI(reviews: ArrayList<Review2>?) {
+        _reviews.value = reviews!!
+        this.reviews=_reviews
     }
 
 }

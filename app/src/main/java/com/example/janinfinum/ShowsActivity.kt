@@ -128,15 +128,9 @@ class ShowsActivity : Fragment() {
     private fun initShowsRecycler() {
         //click on item in recycler view
         adapter = ShowsAdapter(viewModel.shows2) { show ->
-            val title = show.title
-            val desc = show.description
-            val img = show.imageUrl
             val id = show.id
 
-            findNavController().navigate(
-                R.id.action_showsActivity_to_showDetailsActivity,
-                bundleOf(ID to id, TITLE_ARG to title, DESC_ARG to desc, IMG_ARG to img)
-            )
+            findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity, bundleOf(ID to id))
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(activity)
