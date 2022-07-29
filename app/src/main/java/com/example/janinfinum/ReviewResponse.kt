@@ -14,6 +14,6 @@ data class Review2(
     @SerialName("id") val id: String,
     @SerialName("comment") val comment: String?,
     @SerialName("rating") val rating: Float,
-    @SerialName("show_id") val imageUrl: Int,
+    @SerialName("show_id") val showId: Int,
     @SerialName("user") val user: User
 )
