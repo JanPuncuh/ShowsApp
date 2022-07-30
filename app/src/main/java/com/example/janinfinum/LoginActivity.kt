@@ -85,6 +85,7 @@ class LoginActivity : Fragment() {
 
             val dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.logging_in_layout)
+            dialog.setCancelable(false)
             dialog.show()
 
             ApiModule.retrofit.login(loginRequest)

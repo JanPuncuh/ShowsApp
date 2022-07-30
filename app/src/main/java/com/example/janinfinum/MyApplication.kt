@@ -10,4 +10,8 @@ class MyApplication : Application() {
     var client: String? = null
     var user: User? = null
 
+    val database by lazy {
+        AppDatabase.getDatabase(this)
+    }
+
 }

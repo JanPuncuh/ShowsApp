@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -46,13 +48,12 @@ class ShowsActivity : Fragment() {
 
     private lateinit var adapter: ShowsAdapter
 
-    private val viewModel by viewModels<ShowsViewModel>()
+    private val viewModel: ShowsViewModel by viewModels {
+        ShowsViewModelFactory(app.database)
+    }
 
     companion object {
         const val ID = "ID"
-        const val TITLE_ARG = "TITLE_ARG"
-        const val DESC_ARG = "DESC_ARG"
-        const val IMG_ARG = "IMG_ARG"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -88,29 +89,39 @@ class ShowsActivity : Fragment() {
 
         showLoadingState()
 
-        ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
-            .enqueue(object : retrofit2.Callback<ShowResponse> {
-                override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+        //if online, api
+        if (isOnline(requireContext())) {
+            ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
+                .enqueue(object : retrofit2.Callback<ShowResponse> {
+                    override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
 
-                    viewModel.onResponseAPI(response.body()?.shows!!)
-                    viewModel.shows2.observe(viewLifecycleOwner) {
-                        initShowsRecycler()
+                        viewModel.onResponseAPI(response.body()?.shows!!)
+                        viewModel.shows2.observe(viewLifecycleOwner) {
+                            initShowsRecycler()
+                            viewModel.saveShowsToDatabase(response.body()?.shows!!)
+                        }
+
+                        setEmptyOrNormalState()
+
                     }
 
-                    if (viewModel.shows.value?.isNotEmpty()!!) {
-                        showNormalState()
+                    override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
+                        Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
+                        Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
                     }
-                    else if (viewModel.shows.value?.isEmpty()!!) {
-                        showEmptyState()
-                    }
+                })
+        }
+        //if no internet, get from database
+        else {
+            Toast.makeText(requireContext(), "loaded from DB", Toast.LENGTH_SHORT).show()
+            viewModel.getShowsFromDatabase()
+            viewModel.shows2.observe(viewLifecycleOwner) {
+                initShowsRecycler()
+                viewModel.saveShowsToDatabase(viewModel.shows2.value!!)
+            }
 
-                }
-
-                override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
-                    Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
-                    Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
-                }
-            })
+            setEmptyOrNormalState()
+        }
 
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
@@ -121,6 +132,32 @@ class ShowsActivity : Fragment() {
         binding.imageLogout.setOnClickListener {
             showProfileDialog()
         }
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+
+        }
+        return false
     }
 
     private fun showEmptyState() {
@@ -141,6 +178,15 @@ class ShowsActivity : Fragment() {
         binding.imageLogout.isVisible = true
         binding.emptyStateText.isVisible = false
         binding.loadingStateText.isVisible = false
+    }
+
+    private fun setEmptyOrNormalState() {
+        if (viewModel.shows2.value?.isNotEmpty()!!) {
+            showNormalState()
+        }
+        else if (viewModel.shows2.value?.isEmpty()!!) {
+            showEmptyState()
+        }
     }
 
     private fun showLoadingState() {

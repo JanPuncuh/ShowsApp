@@ -138,6 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:inputType="textEmailAddress"
+            android:text="test@testi.si"
             android:textColor="@color/white"
             android:textColorHighlight="@color/white"
             android:textColorHint="@color/white" />
@@ -167,6 +168,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:text="aaaaaa"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
 
