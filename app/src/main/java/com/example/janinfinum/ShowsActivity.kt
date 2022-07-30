@@ -102,7 +102,7 @@ class ShowsActivity : Fragment() {
 
     private fun initShowsRecycler() {
         //click on item in recycler view
-        adapter = ShowsAdapter(viewModel.shows) { show ->
+        adapter = ShowsAdapter(viewModel.shows.value!!) { show ->
             val title = show.title
             val desc = show.description
             val img = show.imageResourceId

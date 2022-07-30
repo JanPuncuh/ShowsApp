@@ -2,12 +2,11 @@ package com.example.janinfinum
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ReviewLayoutBinding
 
 class ReviewAdapter(
-    private var items: LiveData<ArrayList<Review>>,
+    private var items: ArrayList<Review>,
     private val onItemClickCallback: () -> Unit
 ) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
@@ -40,22 +39,22 @@ class ReviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        if (items.value?.get(position) is Review) {
-            holder.bind(items.value?.get(position) as Review)
+        if (items?.get(position) is Review) {
+            holder.bind(items?.get(position))
         }
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items?.count()!!
     }
 
     fun addItem(review: Review) {
-        items.value?.add(review)
-        notifyItemInserted(items.value!!.lastIndex)
+        items?.add(review)
+        notifyItemInserted(items.lastIndex)
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (items.value?.get(position) is Review) {
+        if (items?.get(position) is Review) {
             return 0
         }
         return 1

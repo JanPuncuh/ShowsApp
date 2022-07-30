@@ -96,7 +96,7 @@ class ShowDetailsActivity : Fragment() {
 
     private fun initReviewRecycler() {
         //click on item in recycler view
-        adapter = ReviewAdapter(viewModel.reviews) {
+        adapter = ReviewAdapter(viewModel.reviews.value!!) {
 
         }
 

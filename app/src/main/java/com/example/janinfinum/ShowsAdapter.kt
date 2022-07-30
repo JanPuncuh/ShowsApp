@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ShowFrameLayoutBinding
 
 class ShowsAdapter(
-    private val items: LiveData<List<Show>>,
+    private val items: List<Show>,
     private val onItemClickCallback: (Show) -> Unit
 ) : RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
@@ -28,10 +28,10 @@ class ShowsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        holder.bind(items.value?.get(position)!!)
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items.count()
     }
 }
