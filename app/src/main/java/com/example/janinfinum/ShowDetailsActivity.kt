@@ -141,7 +141,7 @@ class ShowDetailsActivity : Fragment() {
         binding.showDetailDesc.isVisible = true
         binding.showDetailImage.isVisible = true
         binding.showDetailTitle.isVisible = true
-
+        binding.emptyStateText.isVisible = false
         binding.loadingStateGif.isVisible = false
         binding.loadingTextState.isVisible = false
     }

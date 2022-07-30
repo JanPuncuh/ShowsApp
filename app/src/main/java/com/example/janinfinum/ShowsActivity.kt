@@ -123,6 +123,7 @@ class ShowsActivity : Fragment() {
         //if no internet, get from database
         else {
             Toast.makeText(requireContext(), "loaded from DB", Toast.LENGTH_SHORT).show()
+            
             viewModel.getShowsFromDatabase()
             viewModel.shows2.observe(viewLifecycleOwner) {
                 initShowsRecycler()
@@ -236,8 +237,7 @@ class ShowsActivity : Fragment() {
             bottomSheetBinding.profilePicture.setImageBitmap(bitmap)
         }
 
-        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        email = preferences.getString(UID, "default")!!
+        email = app.uid!!
         bottomSheetBinding.userMail.text = email
 
         bottomSheetBinding.changeProfilePictureButton.setOnClickListener {

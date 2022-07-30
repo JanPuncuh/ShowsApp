@@ -46,9 +46,4 @@ class ShowDetailsViewModel : ViewModel() {
         this.reviews = _reviews
     }
 
-    fun add(review: Review2) {
-        _reviews.value?.add(review)
-        reviews = _reviews
-    }
-
 }
