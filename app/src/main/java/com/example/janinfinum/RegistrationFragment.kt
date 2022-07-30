@@ -59,7 +59,9 @@ class RegistrationFragment : Fragment() {
 
                         if (response.isSuccessful) {
                             val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-                            //preferences.edit().putString("TOKEN", response.)
+                            preferences.edit().putString("TOKEN", response.headers()["access-token"]).apply()
+                            preferences.edit().putString("CLIENT", response.headers()["client"]).apply()
+                            preferences.edit().putString("UID", response.headers()["uid"]).apply()
 
                             findNavController().navigate(
                                 R.id.action_registrationFragment_to_loginActivity,

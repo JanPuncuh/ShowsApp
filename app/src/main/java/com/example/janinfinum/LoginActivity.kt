@@ -54,16 +54,9 @@ class LoginActivity : Fragment() {
             binding.registerButton.isVisible = false
         }
 
-        //todo implement through API
         //if remember me, skip login
         if (preferences.getBoolean(REMEMBER_ME, false)) {
-            val email = preferences.getString(EMAIL, "default") ?: "default"
-            binding.editTextEmailAddress.setText(email)
-
-            findNavController().navigate(
-                R.id.action_loginActivity_to_showsActivity,
-                bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
-            )
+            findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
         }
 
         binding.checkBox.isChecked = preferences.getBoolean(REMEMBER_ME, false)

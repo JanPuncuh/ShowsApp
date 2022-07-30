@@ -54,6 +54,9 @@ class ShowsActivity : Fragment() {
 
     companion object {
         const val ID = "ID"
+        private const val UID = "UID"
+        private const val TOKEN = "TOKEN"
+        private const val CLIENT = "CLIENT"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -85,6 +88,11 @@ class ShowsActivity : Fragment() {
 
         app = activity?.application as MyApplication
 
+        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        app.token = preferences.getString(TOKEN, "default")
+        app.client = preferences.getString(CLIENT, "default")
+        app.uid = preferences.getString(UID, "testtest@testi.si")
+
         ApiModule.initRetrofit(requireActivity())
 
         showLoadingState()
@@ -94,15 +102,16 @@ class ShowsActivity : Fragment() {
             ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
                 .enqueue(object : retrofit2.Callback<ShowResponse> {
                     override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+                        if (response.isSuccessful) {
+                            viewModel.onResponseAPI(response.body()?.shows!!)
+                            viewModel.shows2.observe(viewLifecycleOwner) {
+                                initShowsRecycler()
+                                viewModel.saveShowsToDatabase(response.body()?.shows!!)
+                            }
 
-                        viewModel.onResponseAPI(response.body()?.shows!!)
-                        viewModel.shows2.observe(viewLifecycleOwner) {
-                            initShowsRecycler()
-                            viewModel.saveShowsToDatabase(response.body()?.shows!!)
+                            setEmptyOrNormalState()
                         }
-
-                        setEmptyOrNormalState()
-
+                        //todo  handle unsuccessful
                     }
 
                     override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
@@ -227,7 +236,8 @@ class ShowsActivity : Fragment() {
             bottomSheetBinding.profilePicture.setImageBitmap(bitmap)
         }
 
-        email = arguments?.getString(LoginActivity.EMAIL).toString()
+        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        email = preferences.getString(UID, "default")!!
         bottomSheetBinding.userMail.text = email
 
         bottomSheetBinding.changeProfilePictureButton.setOnClickListener {
