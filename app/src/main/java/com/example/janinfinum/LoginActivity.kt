@@ -31,6 +31,7 @@ class LoginActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //starts shows activity
         binding.loginButton.setOnClickListener {
             if (findNavController().currentDestination?.id == R.id.loginActivity) {
                 Log.d("TEST", "navigate?")
