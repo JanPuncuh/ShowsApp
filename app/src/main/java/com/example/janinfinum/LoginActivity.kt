@@ -35,6 +35,7 @@ class LoginActivity : Fragment() {
             if (findNavController().currentDestination?.id == R.id.loginActivity) {
                 Log.d("TEST", "navigate?")
                 findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
+                
             }
         }
 
