@@ -89,16 +89,18 @@ class ShowsActivity : Fragment() {
         app = activity?.application as MyApplication
 
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        app.token = preferences.getString(TOKEN, "default")
-        app.client = preferences.getString(CLIENT, "default")
-        app.uid = preferences.getString(UID, "testtest@testi.si")
+
+        //set either here or in registrationFragment after successful register
+        if (app.token == null) app.token = preferences.getString(TOKEN, "default")
+        if (app.client == null) app.client = preferences.getString(CLIENT, "default")
+        if (app.uid == null) app.uid = preferences.getString(UID, "testtest@testi.si")
 
         ApiModule.initRetrofit(requireActivity())
 
         showLoadingState()
 
         //if online, api
-        if (isOnline(requireContext())) {
+        if (app.isOnline(requireContext())) {
             ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
                 .enqueue(object : retrofit2.Callback<ShowResponse> {
                     override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
@@ -123,7 +125,7 @@ class ShowsActivity : Fragment() {
         //if no internet, get from database
         else {
             Toast.makeText(requireContext(), "loaded from DB", Toast.LENGTH_SHORT).show()
-            
+
             viewModel.getShowsFromDatabase()
             viewModel.shows2.observe(viewLifecycleOwner) {
                 initShowsRecycler()
@@ -142,32 +144,6 @@ class ShowsActivity : Fragment() {
         binding.imageLogout.setOnClickListener {
             showProfileDialog()
         }
-    }
-
-    private fun isOnline(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-        if (capabilities != null) {
-            when {
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
-                    return true
-                }
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
-                    return true
-                }
-            }
-
-        }
-        return false
     }
 
     private fun showEmptyState() {
