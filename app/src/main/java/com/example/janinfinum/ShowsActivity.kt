@@ -108,7 +108,9 @@ class ShowsActivity : Fragment() {
                             viewModel.onResponseAPI(response.body()?.shows!!)
                             viewModel.shows2.observe(viewLifecycleOwner) {
                                 initShowsRecycler()
-                                viewModel.saveShowsToDatabase(response.body()?.shows!!)
+
+                                app.database.showsDao().insertAllShows(response.body()?.shows!!)
+                                Log.d("TEST", app.database.showsDao().getAllShows().value.toString())
                             }
 
                             setEmptyOrNormalState()
@@ -124,15 +126,7 @@ class ShowsActivity : Fragment() {
         }
         //if no internet, get from database
         else {
-            Toast.makeText(requireContext(), "loaded from DB", Toast.LENGTH_SHORT).show()
 
-            viewModel.getShowsFromDatabase()
-            viewModel.shows2.observe(viewLifecycleOwner) {
-                initShowsRecycler()
-                viewModel.saveShowsToDatabase(viewModel.shows2.value!!)
-            }
-
-            setEmptyOrNormalState()
         }
 
         //sets profile picture

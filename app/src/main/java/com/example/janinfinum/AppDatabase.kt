@@ -7,8 +7,10 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-        Show2::class
-    ], version = 1
+        Show2::class,
+        Review2::class,
+        User::class
+    ], version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -20,6 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val database = Room.databaseBuilder(context, AppDatabase::class.java, "database")
+                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries() //todo remove this???
                     .build()
                 INSTANCE = database
@@ -29,5 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     abstract fun showsDao(): ShowsDao
+
+    abstract fun reviewDao(): ReviewDao
 
 }

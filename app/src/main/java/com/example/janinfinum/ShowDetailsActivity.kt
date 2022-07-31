@@ -25,7 +25,9 @@ class ShowDetailsActivity : Fragment() {
     private var _binding: ActivityShowDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<ShowDetailsViewModel>()
+    private val viewModel: ShowDetailsViewModel by viewModels {
+        ShowDetailsViewModelFactory(app.database)
+    }
 
     private lateinit var adapter: ReviewAdapter
     private lateinit var app: MyApplication
@@ -166,7 +168,7 @@ class ShowDetailsActivity : Fragment() {
 
             //review
             val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, show.id.toInt())
-            addReview2(reviewRequest)
+            addReview(reviewRequest)
 
             dialog.dismiss()
         }
@@ -184,7 +186,7 @@ class ShowDetailsActivity : Fragment() {
         binding.recyclerVewReviews.adapter = adapter
     }
 
-    private fun addReview2(reviewRequest: ReviewRequest) {
+    private fun addReview(reviewRequest: ReviewRequest) {
         ApiModule.retrofit.postReview("Bearer", app.token!!, app.client!!, app.uid!!, reviewRequest)
             .enqueue(object : retrofit2.Callback<AddedReviewResponse> {
                 override fun onResponse(call: Call<AddedReviewResponse>, response: Response<AddedReviewResponse>) {
@@ -194,7 +196,8 @@ class ShowDetailsActivity : Fragment() {
                     if (review != null) {
                         adapter.addItem(review)
                     }
-                    Log.d("TEST", (review == null).toString())
+
+                    //app.database.reviewDao().insertNewReview(review!!)
 
                 }
 

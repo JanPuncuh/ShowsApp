@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ShowDetailsViewModel : ViewModel() {
+class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
 
     private val _title = MutableLiveData<String>()
     val title: LiveData<String> = _title
