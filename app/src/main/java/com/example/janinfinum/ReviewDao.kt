@@ -6,12 +6,6 @@ import androidx.room.*
 @Dao
 interface ReviewDao {
 
-
-    /*@Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user : User)
-
-
     @Query("SELECT * FROM review")
     fun getAllReviews(): LiveData<List<Review2>>
 
@@ -19,6 +13,6 @@ interface ReviewDao {
     fun getReview(id: String): LiveData<Review2>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertNewReview(shows : Review2)
-*/
+    fun insertNewReview(review : Review2)
+
 }

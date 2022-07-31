@@ -84,7 +84,11 @@ class ShowDetailsActivity : Fragment() {
                                         viewModel.averageRating(viewModel.reviews.value!!)
                                         viewModel.avg.observe(viewLifecycleOwner) {
                                             binding.textViewReviews.text =
-                                                resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+                                                resources.getString(
+                                                    R.string.reviewsExtra,
+                                                    it.absoluteValue,
+                                                    viewModel.reviews.value!!.size
+                                                )
                                             binding.ratingBar.rating = it.absoluteValue
                                         }
 
@@ -162,7 +166,7 @@ class ShowDetailsActivity : Fragment() {
             //if unrated
             if (bottomSheetBinding.newReviewRatingBar.rating == 0F) {
                 //notifies the user, doesn't add to list
-                Toast.makeText(activity, "Please rate the show", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, getString(R.string.unrated_review_toast_message), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -195,16 +199,13 @@ class ShowDetailsActivity : Fragment() {
 
                     if (review != null) {
                         adapter.addItem(review)
+                        app.database.reviewDao().insertNewReview(review)
                     }
-
-                    //app.database.reviewDao().insertNewReview(review!!)
-
                 }
 
                 override fun onFailure(call: Call<AddedReviewResponse>, t: Throwable) {
-
+                    //todo handle failure
                 }
-
             })
         updateRatings()
     }

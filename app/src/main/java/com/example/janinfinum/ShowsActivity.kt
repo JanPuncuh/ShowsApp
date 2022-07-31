@@ -33,6 +33,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
 import retrofit2.Response
 import kotlin.system.exitProcess
+import android.R.id
+import androidx.lifecycle.Observer
 
 
 class ShowsActivity : Fragment() {
@@ -126,7 +128,17 @@ class ShowsActivity : Fragment() {
         }
         //if no internet, get from database
         else {
+            //todo returns null
 
+            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) {
+                if (viewModel.shows2.value == null) {
+                    showEmptyState()
+                }
+                else {
+                    Toast.makeText(requireContext(), viewModel.shows2.value.toString(), Toast.LENGTH_SHORT).show()
+                    initShowsRecycler()
+                }
+            }
         }
 
         //sets profile picture

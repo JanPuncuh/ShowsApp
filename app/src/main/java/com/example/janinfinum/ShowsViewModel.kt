@@ -17,7 +17,8 @@ class ShowsViewModel(private val database: AppDatabase) : ViewModel() {
     }
 
     fun getShowsFromDatabase(): LiveData<List<Show2>> {
-        return database.showsDao().getAllShows()
+        _shows2.value = database.showsDao().getAllShows().value
+        return _shows2
     }
 
     fun saveShowsToDatabase(shows: List<Show2>) {

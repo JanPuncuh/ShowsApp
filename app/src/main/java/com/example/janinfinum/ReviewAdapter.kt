@@ -16,7 +16,7 @@ class ReviewAdapter(
         //sets single review line
         fun bind(item: Review2) {
             binding.username.text = item.user.email
-            Picasso.get().load(item.user.image_url)
+            Picasso.get().load(item.user.imageUrl)
                 .placeholder(R.drawable.ic_profile_placeholder)
                 .error(R.drawable.ic_profile_placeholder)
                 .fit()

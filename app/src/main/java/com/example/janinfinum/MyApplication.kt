@@ -45,11 +45,4 @@ class MyApplication : Application() {
     }
 
 
-    /*override fun onCreate() {
-        super.onCreate()
-
-        //val testUser = User("0", "test@test.si", null)
-        //database.reviewDao().insertUser(testUser)
-    }*/
-
 }

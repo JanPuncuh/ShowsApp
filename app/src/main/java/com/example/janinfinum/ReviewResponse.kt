@@ -14,17 +14,12 @@ data class ReviewResponse(
     @SerialName("meta") val meta: Meta
 )
 
-/*@Entity(
-    tableName = "review",
-    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["id"], onDelete = CASCADE)]
-)*/
-
 @Entity(tableName = "review")
 @Serializable
 data class Review2(
-    @PrimaryKey @SerialName("id") val id: String, //primary key
+    @PrimaryKey @SerialName("id") val id: String,
     @SerialName("comment") val comment: String?,
     @SerialName("rating") val rating: Float,
-    @SerialName("show_id") val imageUrl: Int,
-    @Embedded @SerialName("user") val user: User //foreign key
+    @SerialName("show_id") val showId: Int,
+    @Embedded(prefix = "user_") @SerialName("user") val user: User
 )
