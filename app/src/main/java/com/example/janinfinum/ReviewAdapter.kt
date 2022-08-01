@@ -8,7 +8,7 @@ import com.example.janinfinum.databinding.ReviewLayoutBinding
 import com.squareup.picasso.Picasso
 
 class ReviewAdapter(
-    private var items: LiveData<ArrayList<Review2>>,
+    private var items: ArrayList<Review2>,
     private val onItemClickCallback: () -> Unit
 ) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
@@ -46,22 +46,22 @@ class ReviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        if (items.value?.get(position) is Review2) {
-            holder.bind(items.value?.get(position) as Review2)
+        if (items?.get(position) is Review2) {
+            holder.bind(items[position] as Review2)
         }
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items.count()
     }
 
     fun addItem(review: Review2) {
-        items.value?.add(review)
-        notifyItemInserted(items.value!!.lastIndex)
+        items.add(review)
+        notifyItemInserted(items.lastIndex)
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (items.value?.get(position) is Review2) {
+        if (items.get(position) is Review2) {
             return 0
         }
         return 1

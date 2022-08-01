@@ -6,23 +6,8 @@ import androidx.lifecycle.ViewModel
 
 class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
 
-    private val _title = MutableLiveData<String>()
-    val title: LiveData<String> = _title
-
-    private val _desc = MutableLiveData<String>()
-    val desc: LiveData<String> = _desc
-
-    private val _img = MutableLiveData<String>()
-    val img: LiveData<String> = _img
-
-    fun setShowDetails(title: String, desc: String, img: String) {
-        _title.value = title
-        _desc.value = desc
-        _img.value = img
-    }
-
     private val _reviews = MutableLiveData<ArrayList<Review2>>()
-    var reviews: LiveData<ArrayList<Review2>> = _reviews
+    val reviews: LiveData<ArrayList<Review2>> = _reviews
 
     //init {}
 
@@ -43,7 +28,14 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
     //sets list of reviews
     fun onResponseAPI(reviews: ArrayList<Review2>?) {
         _reviews.value = reviews!!
-        this.reviews = _reviews
+    }
+
+    fun getReviewsFromDatabase(id: String): LiveData<List<Review2>> {
+        return database.reviewDao().getAllReviewsFromShow(id)
+    }
+
+    fun getShowFromDatabase(id: String): LiveData<Show2> {
+        return database.showsDao().getShow(id)
     }
 
 }
