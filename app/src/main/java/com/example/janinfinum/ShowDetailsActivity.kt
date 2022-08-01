@@ -22,6 +22,7 @@ import kotlin.math.absoluteValue
 class ShowDetailsActivity : Fragment() {
 
     private lateinit var show: Show2
+    private lateinit var showId: String
     private var _binding: ActivityShowDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -40,7 +41,7 @@ class ShowDetailsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val showId = arguments?.getString(ID).toString()
+        showId = arguments?.getString(ID).toString()
         Log.d("TEST", showId)
 
         app = activity?.application as MyApplication
@@ -48,7 +49,10 @@ class ShowDetailsActivity : Fragment() {
         ApiModule.initRetrofit(requireActivity())
 
         binding.button.setOnClickListener() {
-            showWriteNewReviewDialog()
+            if (app.isOnline(requireContext())) {
+                showWriteNewReviewDialog()
+            }
+            else Toast.makeText(requireContext(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
 
         if (app.isOnline(requireContext())) {
@@ -71,7 +75,7 @@ class ShowDetailsActivity : Fragment() {
                                     override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
 
                                         if (response.isSuccessful) {
-                                            //saves all reviews from this show
+                                            //saves all reviews from this show into DB
                                             app.database.reviewDao().insertAllReviewsFromShow(response.body()?.reviews!!)
 
                                             viewModel.onResponseAPI(response.body()?.reviews)
@@ -197,9 +201,10 @@ class ShowDetailsActivity : Fragment() {
                 return@setOnClickListener
             }
 
-            //review
-            val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, show.id.toInt())
-            addReview(reviewRequest)
+            if (app.isOnline(requireContext())) {
+                val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, show.id.toInt())
+                addReview(reviewRequest)
+            }
 
             dialog.dismiss()
         }
@@ -225,7 +230,6 @@ class ShowDetailsActivity : Fragment() {
                     if (response.isSuccessful) {
                         val review = response.body()?.review
 
-                        //todo viewmodel
                         if (review != null) {
                             adapter.addItem(review)
                             app.database.reviewDao().insertNewReview(review)
