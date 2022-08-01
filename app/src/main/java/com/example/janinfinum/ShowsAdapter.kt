@@ -8,7 +8,7 @@ import com.example.janinfinum.databinding.ShowFrameLayoutBinding
 import com.squareup.picasso.Picasso
 
 class ShowsAdapter(
-    private val items: LiveData<List<Show2>>,
+    private val items: List<Show2>,
     private val onItemClickCallback: (Show2) -> Unit
 ) : RecyclerView.Adapter<ShowsAdapter.ShowViewHolder>() {
 
@@ -30,10 +30,10 @@ class ShowsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        holder.bind(items.value?.get(position)!!)
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items.count()
     }
 }

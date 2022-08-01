@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -25,6 +23,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
@@ -33,8 +32,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
 import retrofit2.Response
 import kotlin.system.exitProcess
-import android.R.id
-import androidx.lifecycle.Observer
 
 
 class ShowsActivity : Fragment() {
@@ -108,14 +105,13 @@ class ShowsActivity : Fragment() {
                     override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
                         if (response.isSuccessful) {
                             viewModel.onResponseAPI(response.body()?.shows!!)
-                            viewModel.shows2.observe(viewLifecycleOwner) {
-                                initShowsRecycler()
+                            viewModel.shows.observe(viewLifecycleOwner) {
+                                initShowsRecycler(it)
 
                                 app.database.showsDao().insertAllShows(response.body()?.shows!!)
-                                Log.d("TEST", app.database.showsDao().getAllShows().value.toString())
                             }
 
-                            setEmptyOrNormalState()
+                            setEmptyOrNormalState(viewModel.shows.value!!)
                         }
                         //todo  handle unsuccessful
                     }
@@ -128,15 +124,15 @@ class ShowsActivity : Fragment() {
         }
         //if no internet, get from database
         else {
-            //todo returns null
-
-            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) {
-                if (viewModel.shows2.value == null) {
+            Log.d("TEST", "AAAAAA")
+            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
+                if (shows.isNullOrEmpty()) {
                     showEmptyState()
+                    if (shows == null) Log.d("TEST", "shows == null")
                 }
                 else {
-                    Toast.makeText(requireContext(), viewModel.shows2.value.toString(), Toast.LENGTH_SHORT).show()
-                    initShowsRecycler()
+                    initShowsRecycler(shows)
+                    setEmptyOrNormalState(shows)
                 }
             }
         }
@@ -172,11 +168,11 @@ class ShowsActivity : Fragment() {
         binding.loadingStateText.isVisible = false
     }
 
-    private fun setEmptyOrNormalState() {
-        if (viewModel.shows2.value?.isNotEmpty()!!) {
+    private fun setEmptyOrNormalState(list: List<Show2>) {
+        if (list.isNotEmpty()) {
             showNormalState()
         }
-        else if (viewModel.shows2.value?.isEmpty()!!) {
+        else if (list.isEmpty()) {
             showEmptyState()
         }
     }
@@ -195,9 +191,9 @@ class ShowsActivity : Fragment() {
         _binding = null
     }
 
-    private fun initShowsRecycler() {
+    private fun initShowsRecycler(list: List<Show2>) {
         //click on item in recycler view
-        adapter = ShowsAdapter(viewModel.shows2) { show ->
+        adapter = ShowsAdapter(list) { show ->
             val id = show.id
 
             findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity, bundleOf(ID to id))
