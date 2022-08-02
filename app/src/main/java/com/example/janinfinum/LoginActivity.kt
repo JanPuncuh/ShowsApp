@@ -1,5 +1,6 @@
 package com.example.janinfinum
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,11 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
+import android.content.SharedPreferences
+import android.text.Editable
+import android.widget.Toast
+import androidx.core.content.edit
+import androidx.core.os.bundleOf
 
 
 class LoginActivity : Fragment() {
@@ -17,6 +23,8 @@ class LoginActivity : Fragment() {
     private val binding get() = _binding!!
 
     companion object {
+        const val EMAIL = "EMAIL"
+        const val REMEMBER_ME = "REMEMBER_ME"
         private const val MIN_PASSWORD_LENGTH = 6
         private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
@@ -31,12 +39,49 @@ class LoginActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //starts shows activity
+        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+
+        //if remember me, skip login
+        if (preferences.getBoolean(REMEMBER_ME, false)) {
+            val email = preferences.getString(EMAIL, "default") ?: "default"
+            binding.editTextEmailAddress.setText(email)
+
+            findNavController().navigate(R.id.action_loginActivity_to_showsActivity,
+                bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
+            )
+        }
+
+        binding.checkBox.isChecked = preferences.getBoolean(REMEMBER_ME, false)
+
+        //sets preference
+        binding.checkBox.setOnClickListener() {
+            preferences.edit {
+                putBoolean(REMEMBER_ME, binding.checkBox.isChecked)
+            }
+        }
+
         binding.loginButton.setOnClickListener {
+
+            //if checked at login, save email
+            if (binding.checkBox.isChecked) {
+                if (!preferences.contains(EMAIL)) {
+                    preferences.edit() {
+                        putString(EMAIL, binding.editTextEmailAddress.text.toString())
+                    }
+                }
+            }
+            //if unchecked at login, remove email
+            else {
+                if (preferences.contains(EMAIL)) {
+                    preferences.edit().remove(EMAIL).apply()
+                }
+            }
+
             if (findNavController().currentDestination?.id == R.id.loginActivity) {
                 Log.d("TEST", "navigate?")
-                findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
-                
+                findNavController().navigate(R.id.action_loginActivity_to_showsActivity,
+                    bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
+                )
             }
         }
 

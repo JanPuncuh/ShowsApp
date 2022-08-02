@@ -19,9 +19,9 @@
 
     <ImageView
         android:id="@+id/imageLogout"
-        android:layout_width="wrap_content"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_login_24"
+        android:src="@drawable/ic_profile_placeholder"
         android:layout_marginEnd="@dimen/margin_end"
         app:layout_constraintBottom_toTopOf="@+id/recycleView"
         app:layout_constraintEnd_toEndOf="parent"

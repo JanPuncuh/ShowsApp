@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ReviewLayoutBinding
 
 class ReviewAdapter(
-    private var items: List<DetailsItem>,
+    private var items: ArrayList<Review>,
     private val onItemClickCallback: () -> Unit
 ) : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
@@ -39,22 +39,22 @@ class ReviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        if (items[position] is Review) {
-            holder.bind(items[position] as Review)
+        if (items?.get(position) is Review) {
+            holder.bind(items?.get(position))
         }
     }
 
     override fun getItemCount(): Int {
-        return items.count()
+        return items?.count()!!
     }
 
     fun addItem(review: Review) {
-        items = items + review
+        items?.add(review)
         notifyItemInserted(items.lastIndex)
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (items[position] is Review) {
+        if (items?.get(position) is Review) {
             return 0
         }
         return 1

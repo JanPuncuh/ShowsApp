@@ -1,8 +1,7 @@
 package com.example.janinfinum
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.ShowsActivity.Companion.DESC_ARG
 import com.example.janinfinum.ShowsActivity.Companion.IMG_ARG
@@ -17,22 +17,16 @@ import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-
+import kotlin.math.absoluteValue
 
 class ShowDetailsActivity : Fragment() {
 
     private var _binding: ActivityShowDetailsBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel by viewModels<ShowDetailsViewModel>()
+
     private lateinit var adapter: ReviewAdapter
-
-    private var reviews = mutableListOf<DetailsItem>()
-
-    companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowDetailsActivity::class.java)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
@@ -46,14 +40,20 @@ class ShowDetailsActivity : Fragment() {
         val desc = arguments?.getString(DESC_ARG)
         val img = arguments?.getInt(IMG_ARG)
 
-        binding.showDetailTitle.title = title
-        binding.showDetailDesc.text = desc
-        binding.showDetailImage.setImageResource(img!!)
+        viewModel.setShowDetails(title!!, desc!!, img!!)
 
-        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
-        binding.ratingBar.rating = averageRating(reviews)
+        binding.showDetailTitle.title = viewModel.title.value
+        binding.showDetailDesc.text = viewModel.desc.value
+        binding.showDetailImage.setImageResource(viewModel.img.value!!)
 
-        if (reviews.isEmpty()) {
+        viewModel.averageRating(viewModel.reviews.value!!)
+
+        viewModel.avg.observe(viewLifecycleOwner) {
+            binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+            binding.ratingBar.rating = it.absoluteValue
+        }
+
+        if (viewModel.reviews.value?.isEmpty()!!) {
             binding.recyclerVewReviews.isVisible = false
             binding.ratingBar.isVisible = false
             binding.textViewReviews.text = resources.getString(R.string.reviews)
@@ -105,7 +105,7 @@ class ShowDetailsActivity : Fragment() {
 
     private fun initReviewRecycler() {
         //click on item in recycler view
-        adapter = ReviewAdapter(reviews) {
+        adapter = ReviewAdapter(viewModel.reviews.value!!) {
 
         }
 
@@ -116,14 +116,19 @@ class ShowDetailsActivity : Fragment() {
 
     private fun addReview(review: Review) {
         adapter.addItem(review)
-        reviews.add(review)
-        binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
+        //viewModel.reviews.value!!.add(review)
 
-        if (reviews.isEmpty()) {
-            binding.textViewReviews.text = resources.getString(R.string.reviews)
+        viewModel.averageRating(viewModel.reviews.value!!)
+
+        viewModel.avg.observe(viewLifecycleOwner) {
+            binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+            Log.d("TEST", it.absoluteValue.toString())
         }
 
-        if (reviews.isNotEmpty()) {
+        if (viewModel.reviews.value!!.isEmpty()) {
+            binding.textViewReviews.text = resources.getString(R.string.reviews)
+        }
+        else if (viewModel.reviews.value!!.isNotEmpty()) {
             binding.recyclerVewReviews.isVisible = true
             binding.ratingBar.isVisible = true
             binding.emptyStateText.isVisible = false
@@ -131,18 +136,10 @@ class ShowDetailsActivity : Fragment() {
 
     }
 
-    private fun averageRating(list: List<DetailsItem>): Float {
-        var rating = 0F
-        list.forEach { review ->
-            if (review is Review) {
-                rating += review.rating
-            }
-        }
-        rating /= list.count()
-        return rating
-    }
-
     private fun updateRatings() {
-        binding.ratingBar.rating = averageRating(reviews)
+        viewModel.averageRating(viewModel.reviews.value!!)
+        viewModel.avg.observe(viewLifecycleOwner) {
+            binding.ratingBar.rating = it.absoluteValue
+        }
     }
 }
