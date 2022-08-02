@@ -3,6 +3,7 @@ package com.example.janinfinum
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -156,6 +157,7 @@ class ShowDetailsActivity : Fragment() {
         binding.textViewReviews.isVisible = true
         binding.ratingBar.isVisible = true
         binding.button.isVisible = true
+        binding.emptyStateText.isVisible = false
         binding.showDetailDesc.isVisible = true
         binding.showDetailImage.isVisible = true
         binding.showDetailTitle.isVisible = true
@@ -220,6 +222,7 @@ class ShowDetailsActivity : Fragment() {
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(activity)
         binding.recyclerVewReviews.adapter = adapter
+
     }
 
     private fun addReview(reviewRequest: ReviewRequest) {
