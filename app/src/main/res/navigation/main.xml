@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main.xml"
+    app:startDestination="@id/loginActivity">
+
+    <fragment
+        android:id="@+id/loginActivity"
+        android:name="com.example.janinfinum.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login">
+        <action
+            android:id="@+id/action_loginActivity_to_showsActivity"
+            app:destination="@id/showsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/showsActivity"
+        android:name="com.example.janinfinum.ShowsActivity"
+        android:label="activity_shows"
+        tools:layout="@layout/activity_shows" >
+        <action
+            android:id="@+id/action_showsActivity_to_showDetailsActivity"
+            app:destination="@id/showDetailsActivity" />
+        <action
+            android:id="@+id/action_showsActivity_to_loginActivity"
+            app:destination="@id/loginActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/showDetailsActivity"
+        android:name="com.example.janinfinum.ShowDetailsActivity"
+        android:label="activity_show_details"
+        tools:layout="@layout/activity_show_details" />
+</navigation>

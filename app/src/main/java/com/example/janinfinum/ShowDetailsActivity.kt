@@ -3,64 +3,52 @@ package com.example.janinfinum
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.janinfinum.ShowsActivity.Companion.DESC_ARG
+import com.example.janinfinum.ShowsActivity.Companion.IMG_ARG
+import com.example.janinfinum.ShowsActivity.Companion.TITLE_ARG
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
-class ShowDetailsActivity : AppCompatActivity() {
+class ShowDetailsActivity : Fragment() {
 
-    private lateinit var binding: ActivityShowDetailsBinding
+    private var _binding: ActivityShowDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: ReviewAdapter
 
-    private var reviews = mutableListOf<DetailsItem>(
-        //Review("TestUser", "??????????", 1F, R.drawable.ic_profile_placeholder),
-        //Review("TestUser", "test", 2F, R.drawable.ic_profile_placeholder),
-        //Review("TestUser", "OK", 3F, R.drawable.ic_profile_placeholder),
-        //Review("TestUser", "kr neki", 4F, R.drawable.ic_profile_placeholder),
-        //Review("TestUser", "AAAAAAAAAAAAa", 5F, R.drawable.ic_profile_placeholder),
-    )
+    private var reviews = mutableListOf<DetailsItem>()
 
     companion object {
-
-        const val EXTRA_TITLE = "EXTRA_TITLE"
-        const val EXTRA_DESC = "EXTRA_DESC"
-        const val EXTRA_IMG = "EXTRA_IMG"
-
         fun buildIntent(activity: Activity): Intent {
             return Intent(activity, ShowDetailsActivity::class.java)
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = ActivityShowDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding = ActivityShowDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // toolbar
-        val toolbar: Toolbar = binding.showDetailTitle
-        setSupportActionBar(toolbar)
-
-        // add back arrow to toolbar
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-        }
-
-        val title: String = intent.getStringExtra(EXTRA_TITLE).toString()
-        val desc = intent.getStringExtra(EXTRA_DESC).toString()
-        val img = intent.getIntExtra(EXTRA_IMG, 0)
+        val title = arguments?.getString(TITLE_ARG)
+        val desc = arguments?.getString(DESC_ARG)
+        val img = arguments?.getInt(IMG_ARG)
 
         binding.showDetailTitle.title = title
         binding.showDetailDesc.text = desc
-        binding.showDetailImage.setImageResource(img)
+        binding.showDetailImage.setImageResource(img!!)
 
         binding.textViewReviews.text = resources.getString(R.string.reviewsExtra, averageRating(reviews), reviews.size)
         binding.ratingBar.rating = averageRating(reviews)
@@ -82,13 +70,13 @@ class ShowDetailsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // handle arrow click here
         if (item.itemId == android.R.id.home) {
-            finish() // close this activity and return to preview activity (if there is any)
+            activity?.finish() // close this activity and return to preview activity (if there is any)
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun showWriteNewReviewDialog() {
-        val dialog = BottomSheetDialog(this)
+        val dialog = BottomSheetDialog(requireActivity())
 
         val bottomSheetBinding = NewReviewLayoutBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
@@ -101,7 +89,7 @@ class ShowDetailsActivity : AppCompatActivity() {
             //if unrated
             if (bottomSheetBinding.newReviewRatingBar.rating == 0F) {
                 //notifies the user, doesn't add to list
-                Toast.makeText(this, "Please rate the show", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Please rate the show", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -121,7 +109,7 @@ class ShowDetailsActivity : AppCompatActivity() {
 
         }
 
-        binding.recyclerVewReviews.layoutManager = LinearLayoutManager(this)
+        binding.recyclerVewReviews.layoutManager = LinearLayoutManager(activity)
         binding.recyclerVewReviews.adapter = adapter
 
     }
@@ -145,9 +133,9 @@ class ShowDetailsActivity : AppCompatActivity() {
 
     private fun averageRating(list: List<DetailsItem>): Float {
         var rating = 0F
-        list.forEach {
-            if (it is Review) {
-                rating += it.rating
+        list.forEach { review ->
+            if (review is Review) {
+                rating += review.rating
             }
         }
         rating /= list.count()

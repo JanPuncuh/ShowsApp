@@ -1,34 +1,43 @@
 package com.example.janinfinum
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
-import android.view.View.OnTouchListener
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
-import com.example.janinfinum.WelcomeActivity.Companion.EXTRA_USERNAME
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
 
-class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
+class LoginActivity : Fragment() {
+
+    private var _binding: ActivityLoginBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         private const val MIN_PASSWORD_LENGTH = 6
         private val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        //return super.onCreateView(inflater, container, savedInstanceState)
+        _binding = ActivityLoginBinding.inflate(inflater, container, false)
+        return binding.root
 
-        super.onCreate(savedInstanceState)
+    }
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         //starts shows activity
         binding.loginButton.setOnClickListener {
-            startActivity(ShowsActivity.buildIntent(this))
+            if (findNavController().currentDestination?.id == R.id.loginActivity) {
+                Log.d("TEST", "navigate?")
+                findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
+                
+            }
         }
 
         //checks validation of email
@@ -46,6 +55,11 @@ class LoginActivity : AppCompatActivity() {
             enableLoginButton()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun emailValidate(email: String): Boolean {
