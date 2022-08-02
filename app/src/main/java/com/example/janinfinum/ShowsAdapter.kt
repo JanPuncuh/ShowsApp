@@ -30,10 +30,10 @@ class ShowsAdapter(
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        holder.bind(items.value?.get(position)!!)
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items.count()
     }
 }
