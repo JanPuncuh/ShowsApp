@@ -3,6 +3,7 @@ package com.example.janinfinum
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -146,6 +147,14 @@ class ShowDetailsActivity : Fragment() {
         binding.loadingTextState.isVisible = false
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // handle arrow click here
+        if (item.itemId == android.R.id.home) {
+            activity?.finish() // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun showWriteNewReviewDialog() {
         val dialog = BottomSheetDialog(requireActivity())
 
@@ -176,12 +185,13 @@ class ShowDetailsActivity : Fragment() {
 
     private fun initReviewRecycler() {
         //click on item in recycler view
-        adapter = ReviewAdapter(viewModel.reviews) {
+        adapter = ReviewAdapter(viewModel.reviews.value!!) {
 
         }
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(activity)
         binding.recyclerVewReviews.adapter = adapter
+
     }
 
     private fun addReview2(reviewRequest: ReviewRequest) {

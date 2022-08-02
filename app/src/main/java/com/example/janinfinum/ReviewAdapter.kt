@@ -2,7 +2,6 @@ package com.example.janinfinum
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.janinfinum.databinding.ReviewLayoutBinding
 import com.squareup.picasso.Picasso
@@ -48,11 +47,13 @@ class ReviewAdapter(
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         if (items.value?.get(position) is Review2) {
             holder.bind(items.value?.get(position) as Review2)
+        if (items?.get(position) is Review) {
+            holder.bind(items?.get(position))
         }
     }
 
     override fun getItemCount(): Int {
-        return items.value?.count()!!
+        return items?.count()!!
     }
 
     fun addItem(review: Review2) {
