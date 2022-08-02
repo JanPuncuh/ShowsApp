@@ -11,7 +11,6 @@ data class RegisterResponse(
     @SerialName("user") val user: User
 )
 
-//@Entity(tableName = "user")
 @Serializable
 data class User(
     @PrimaryKey @SerialName("id") val id: String,
