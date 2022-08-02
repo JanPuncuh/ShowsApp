@@ -83,7 +83,11 @@ class ShowDetailsActivity : Fragment() {
                                         viewModel.averageRating(viewModel.reviews.value!!)
                                         viewModel.avg.observe(viewLifecycleOwner) {
                                             binding.textViewReviews.text =
-                                                resources.getString(R.string.reviewsExtra, it.absoluteValue, viewModel.reviews.value!!.size)
+                                                resources.getString(
+                                                    R.string.reviewsExtra,
+                                                    it.absoluteValue,
+                                                    viewModel.reviews.value!!.size
+                                                )
                                             binding.ratingBar.rating = it.absoluteValue
                                         }
 
@@ -139,6 +143,7 @@ class ShowDetailsActivity : Fragment() {
         binding.textViewReviews.isVisible = true
         binding.ratingBar.isVisible = true
         binding.button.isVisible = true
+        binding.emptyStateText.isVisible = false
         binding.showDetailDesc.isVisible = true
         binding.showDetailImage.isVisible = true
         binding.showDetailTitle.isVisible = true

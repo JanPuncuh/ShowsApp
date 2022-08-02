@@ -23,6 +23,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
@@ -50,9 +51,9 @@ class ShowsActivity : Fragment() {
 
     companion object {
         const val ID = "ID"
-        const val TITLE_ARG = "TITLE_ARG"
-        const val DESC_ARG = "DESC_ARG"
-        const val IMG_ARG = "IMG_ARG"
+        private const val UID = "UID"
+        private const val TOKEN = "TOKEN"
+        private const val CLIENT = "CLIENT"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -84,26 +85,31 @@ class ShowsActivity : Fragment() {
 
         app = activity?.application as MyApplication
 
+        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+
+        //set either here or in registrationFragment after successful register
+        if (app.token == null) app.token = preferences.getString(TOKEN, "default")
+        if (app.client == null) app.client = preferences.getString(CLIENT, "default")
+        if (app.uid == null) app.uid = preferences.getString(UID, "testtest@testi.si")
+
         ApiModule.initRetrofit(requireActivity())
 
         showLoadingState()
 
+        //if online, api
         ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+                    if (response.isSuccessful) {
+                        viewModel.onResponseAPI(response.body()?.shows!!)
+                        viewModel.shows2.observe(viewLifecycleOwner) {
+                            initShowsRecycler(it)
 
-                    viewModel.onResponseAPI(response.body()?.shows!!)
-                    viewModel.shows2.observe(viewLifecycleOwner) {
-                        initShowsRecycler()
-                    }
+                        }
 
-                    if (viewModel.shows.value?.isNotEmpty()!!) {
-                        showNormalState()
+                        setEmptyOrNormalState(viewModel.shows2.value!!)
                     }
-                    else if (viewModel.shows.value?.isEmpty()!!) {
-                        showEmptyState()
-                    }
-
+                    //todo  handle unsuccessful
                 }
 
                 override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
@@ -143,6 +149,15 @@ class ShowsActivity : Fragment() {
         binding.loadingStateText.isVisible = false
     }
 
+    private fun setEmptyOrNormalState(list: List<Show2>) {
+        if (list.isNotEmpty()) {
+            showNormalState()
+        }
+        else if (list.isEmpty()) {
+            showEmptyState()
+        }
+    }
+
     private fun showLoadingState() {
         binding.emptyStateImageForeground.isVisible = true
         binding.emptyStateImageBackground.isVisible = true
@@ -157,9 +172,9 @@ class ShowsActivity : Fragment() {
         _binding = null
     }
 
-    private fun initShowsRecycler() {
+    private fun initShowsRecycler(list: List<Show2>) {
         //click on item in recycler view
-        adapter = ShowsAdapter(viewModel.shows2) { show ->
+        adapter = ShowsAdapter(list) { show ->
             val id = show.id
 
             findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity, bundleOf(ID to id))
@@ -181,7 +196,7 @@ class ShowsActivity : Fragment() {
             bottomSheetBinding.profilePicture.setImageBitmap(bitmap)
         }
 
-        email = arguments?.getString(LoginActivity.EMAIL).toString()
+        email = app.uid!!
         bottomSheetBinding.userMail.text = email
 
         bottomSheetBinding.changeProfilePictureButton.setOnClickListener {
