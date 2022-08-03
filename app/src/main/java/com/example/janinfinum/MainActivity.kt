@@ -3,8 +3,6 @@ package com.example.janinfinum
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
 import com.example.janinfinum.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
