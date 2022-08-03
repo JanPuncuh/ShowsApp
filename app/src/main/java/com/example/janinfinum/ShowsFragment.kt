@@ -23,7 +23,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
@@ -34,7 +33,7 @@ import retrofit2.Response
 import kotlin.system.exitProcess
 
 
-class ShowsActivity : Fragment() {
+class ShowsFragment : Fragment() {
 
     lateinit var app: MyApplication
     private lateinit var bottomSheetBinding: ManageProfileBottomsheetLayoutBinding
@@ -240,7 +239,10 @@ class ShowsActivity : Fragment() {
         alertDialogBuilder.setPositiveButton(android.R.string.yes) { dialog, which ->
             val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
             preferences.edit {
-                putBoolean(LoginActivity.REMEMBER_ME, false).commit()
+                putBoolean(LoginFragment.REMEMBER_ME, false).commit()
+                remove("UID").commit()
+                remove("TOKEN").commit()
+                remove("CLIENT").commit()
             }
             exitProcess(-1)
         }
