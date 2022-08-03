@@ -5,4 +5,6 @@
     <dimen name="textsize_big">36sp</dimen>
     <dimen name="loginButtonRadius">32dp</dimen>
     <dimen name="editTextBorder">2dp</dimen>
+    <dimen name="spacing_2x">16dp</dimen>
+    <dimen name="spacing_1x">8dp</dimen>
 </resources>
