@@ -20,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Response
 import kotlin.math.absoluteValue
 
-class ShowFragment : Fragment() {
+class ShowsDetailsFragment : Fragment() {
 
     private lateinit var show: Show2
     private lateinit var showId: String
