@@ -221,6 +221,9 @@ class ShowsFragment : Fragment() {
             val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
             preferences.edit {
                 putBoolean(LoginFragment.REMEMBER_ME, false).commit()
+                remove("UID").commit()
+                remove("TOKEN").commit()
+                remove("CLIENT").commit()
             }
             exitProcess(-1)
         }
