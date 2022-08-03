@@ -7,9 +7,14 @@
 
     <fragment
         android:id="@+id/loginActivity"
-        android:name="com.example.janinfinum.LoginActivity"
+        android:name="com.example.janinfinum.LoginFragment"
         android:label="activity_login"
         tools:layout="@layout/activity_login">
+
+        <argument
+            android:name="email"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_loginActivity_to_showsActivity"
             app:destination="@id/showsActivity" />
@@ -19,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/showsActivity"
-        android:name="com.example.janinfinum.ShowsActivity"
+        android:name="com.example.janinfinum.ShowsFragment"
         android:label="activity_shows"
         tools:layout="@layout/activity_shows" >
         <action
@@ -31,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/showDetailsActivity"
-        android:name="com.example.janinfinum.ShowDetailsActivity"
+        android:name="com.example.janinfinum.ShowFragment"
         android:label="activity_show_details"
         tools:layout="@layout/activity_show_details" />
     <fragment

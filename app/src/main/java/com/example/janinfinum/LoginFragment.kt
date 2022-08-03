@@ -20,7 +20,7 @@ import retrofit2.Response
 import kotlin.math.log
 
 
-class LoginActivity : Fragment() {
+class LoginFragment : Fragment() {
 
     lateinit var app: MyApplication
     private var _binding: ActivityLoginBinding? = null
@@ -117,7 +117,7 @@ class LoginActivity : Fragment() {
                             }
                         }
                         else if (!response.isSuccessful) {
-                            Toast.makeText(requireActivity(), "Login Unsuccessful\nCheck your email and password", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireActivity(), R.string.login_unsuccessful, Toast.LENGTH_SHORT).show()
                         }
                     }
 

@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.janinfinum.ShowsActivity.Companion.ID
+import com.example.janinfinum.ShowsFragment.Companion.ID
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -20,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Response
 import kotlin.math.absoluteValue
 
-class ShowDetailsActivity : Fragment() {
+class ShowFragment : Fragment() {
 
     private lateinit var show: Show2
     private var _binding: ActivityShowDetailsBinding? = null

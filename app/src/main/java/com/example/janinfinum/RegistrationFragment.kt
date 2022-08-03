@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.RegistrationFragmentBinding
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class RegistrationFragment : Fragment() {
 
@@ -80,7 +79,7 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun passwordValidate(password: String, passwordRepeat: String): Boolean {
-        if (password.length >= LoginActivity.MIN_PASSWORD_LENGTH) {
+        if (password.length >= LoginFragment.MIN_PASSWORD_LENGTH) {
             if (password == passwordRepeat) {
                 return true
             }
@@ -89,7 +88,7 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun emailValidate(email: String): Boolean {
-        return email.isNotEmpty() && LoginActivity.emailRegex.containsMatchIn(email)
+        return email.isNotEmpty() && LoginFragment.emailRegex.containsMatchIn(email)
     }
 
     private fun validateLogin(email: String, password: String, passwordRepeat: String): Boolean {
