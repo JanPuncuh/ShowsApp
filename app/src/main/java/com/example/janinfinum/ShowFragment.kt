@@ -3,6 +3,7 @@ package com.example.janinfinum
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -10,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.janinfinum.ShowsActivity.Companion.ID
+import com.example.janinfinum.ShowsFragment.Companion.ID
 import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -19,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Response
 import kotlin.math.absoluteValue
 
-class ShowDetailsActivity : Fragment() {
+class ShowFragment : Fragment() {
 
     private lateinit var show: Show2
     private lateinit var showId: String
@@ -156,6 +157,7 @@ class ShowDetailsActivity : Fragment() {
         binding.textViewReviews.isVisible = true
         binding.ratingBar.isVisible = true
         binding.button.isVisible = true
+        binding.emptyStateText.isVisible = false
         binding.showDetailDesc.isVisible = true
         binding.showDetailImage.isVisible = true
         binding.showDetailTitle.isVisible = true
@@ -220,6 +222,7 @@ class ShowDetailsActivity : Fragment() {
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(activity)
         binding.recyclerVewReviews.adapter = adapter
+
     }
 
     private fun addReview(reviewRequest: ReviewRequest) {
