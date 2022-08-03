@@ -20,6 +20,7 @@
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.App.SplashScrenn"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
