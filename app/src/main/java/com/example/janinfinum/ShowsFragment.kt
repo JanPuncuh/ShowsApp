@@ -73,7 +73,8 @@ class ShowsFragment : Fragment() {
                 //sets both images and saves it on phone's storage
                 if (takenPhoto != null) {
                     bottomSheetBinding.profilePicture.setImageBitmap(takenPhoto as Bitmap?)
-                    binding.imageLogout.setImageBitmap(takenPhoto as Bitmap)
+                    //binding.imageLogout.setImageBitmap(takenPhoto as Bitmap)
+                    binding.showsText.setBitmapImage(takenPhoto)
 
                     ImageSaver(context).setFileName("myImage.png").setDirectoryName("images").save(takenPhoto)
                 }
@@ -139,10 +140,10 @@ class ShowsFragment : Fragment() {
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
         if (bitmap != null) {
-            binding.imageLogout.setImageBitmap(bitmap)
+            binding.showsText.setBitmapImage(bitmap)
         }
 
-        binding.imageLogout.setOnClickListener {
+        binding.showsText.getImage().setOnClickListener {
             showProfileDialog()
         }
     }
@@ -154,7 +155,7 @@ class ShowsFragment : Fragment() {
         binding.showsText.isVisible = false
         binding.loadingStateText.isVisible = false
         binding.emptyStateText.isVisible = true
-        binding.imageLogout.isVisible = false
+        //binding.imageLogout.isVisible = false
     }
 
     private fun showNormalState() {
@@ -162,7 +163,7 @@ class ShowsFragment : Fragment() {
         binding.emptyStateImageBackground.isVisible = false
         binding.recycleView.isVisible = true
         binding.showsText.isVisible = true
-        binding.imageLogout.isVisible = true
+        //binding.imageLogout.isVisible = true
         binding.emptyStateText.isVisible = false
         binding.loadingStateText.isVisible = false
     }
@@ -182,7 +183,7 @@ class ShowsFragment : Fragment() {
         binding.recycleView.isVisible = false
         binding.showsText.isVisible = false
         binding.emptyStateText.isVisible = false
-        binding.imageLogout.isVisible = false
+        //binding.imageLogout.isVisible = false
     }
 
     override fun onDestroyView() {
