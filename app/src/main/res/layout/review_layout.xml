@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:src="@mipmap/ic_launcher"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +34,7 @@
             app:layout_constraintStart_toEndOf="@+id/userIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- todo add barrier -->
         <TextView
             android:id="@+id/reviewComment"
             android:layout_width="0dp"

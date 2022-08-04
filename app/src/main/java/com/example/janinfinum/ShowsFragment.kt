@@ -9,9 +9,11 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -26,11 +28,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import retrofit2.Call
+import retrofit2.Response
 import kotlin.system.exitProcess
 
 
-class ShowsActivity : Fragment() {
+class ShowsFragment : Fragment() {
 
+    lateinit var app: MyApplication
     private lateinit var bottomSheetBinding: ManageProfileBottomsheetLayoutBinding
     private val REQUEST_ID = 7
     private lateinit var getContent: ActivityResultLauncher<Intent>
@@ -44,9 +49,10 @@ class ShowsActivity : Fragment() {
     private val viewModel by viewModels<ShowsViewModel>()
 
     companion object {
-        const val TITLE_ARG = "TITLE_ARG"
-        const val DESC_ARG = "DESC_ARG"
-        const val IMG_ARG = "IMG_ARG"
+        const val ID = "ID"
+        private const val UID = "UID"
+        private const val TOKEN = "TOKEN"
+        private const val CLIENT = "CLIENT"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -76,7 +82,40 @@ class ShowsActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initShowsRecycler()
+        app = activity?.application as MyApplication
+
+        val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+
+        //set either here or in registrationFragment after successful register
+        if (app.token == null) app.token = preferences.getString(TOKEN, "default")
+        if (app.client == null) app.client = preferences.getString(CLIENT, "default")
+        if (app.uid == null) app.uid = preferences.getString(UID, "testtest@testi.si")
+
+        ApiModule.initRetrofit(requireActivity())
+
+        showLoadingState()
+
+        //if online, api
+        ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
+            .enqueue(object : retrofit2.Callback<ShowResponse> {
+                override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+                    if (response.isSuccessful) {
+                        viewModel.onResponseAPI(response.body()?.shows!!)
+                        viewModel.shows2.observe(viewLifecycleOwner) {
+                            initShowsRecycler(it)
+
+                        }
+
+                        setEmptyOrNormalState(viewModel.shows2.value!!)
+                    }
+                    //todo  handle unsuccessful
+                }
+
+                override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
+                    Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
+                    Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
+                }
+            })
 
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
@@ -84,15 +123,47 @@ class ShowsActivity : Fragment() {
             binding.imageLogout.setImageBitmap(bitmap)
         }
 
-        if (viewModel.shows.value?.isNotEmpty()!!) {
-            binding.emptyStateText.isVisible = false
-            binding.emptyStateImageBackground.isVisible = false
-            binding.emptyStateImageForeground.isVisible = false
-        }
-
         binding.imageLogout.setOnClickListener {
             showProfileDialog()
         }
+    }
+
+    private fun showEmptyState() {
+        binding.emptyStateImageForeground.isVisible = true
+        binding.emptyStateImageBackground.isVisible = true
+        binding.recycleView.isVisible = false
+        binding.showsText.isVisible = false
+        binding.loadingStateText.isVisible = false
+        binding.emptyStateText.isVisible = true
+        binding.imageLogout.isVisible = false
+    }
+
+    private fun showNormalState() {
+        binding.emptyStateImageForeground.isVisible = false
+        binding.emptyStateImageBackground.isVisible = false
+        binding.recycleView.isVisible = true
+        binding.showsText.isVisible = true
+        binding.imageLogout.isVisible = true
+        binding.emptyStateText.isVisible = false
+        binding.loadingStateText.isVisible = false
+    }
+
+    private fun setEmptyOrNormalState(list: List<Show2>) {
+        if (list.isNotEmpty()) {
+            showNormalState()
+        }
+        else if (list.isEmpty()) {
+            showEmptyState()
+        }
+    }
+
+    private fun showLoadingState() {
+        binding.emptyStateImageForeground.isVisible = true
+        binding.emptyStateImageBackground.isVisible = true
+        binding.recycleView.isVisible = false
+        binding.showsText.isVisible = false
+        binding.emptyStateText.isVisible = false
+        binding.imageLogout.isVisible = false
     }
 
     override fun onDestroyView() {
@@ -100,17 +171,12 @@ class ShowsActivity : Fragment() {
         _binding = null
     }
 
-    private fun initShowsRecycler() {
+    private fun initShowsRecycler(list: List<Show2>) {
         //click on item in recycler view
-        adapter = ShowsAdapter(viewModel.shows.value!!) { show ->
-            val title = show.title
-            val desc = show.description
-            val img = show.imageResourceId
+        adapter = ShowsAdapter(list) { show ->
+            val id = show.id
 
-            findNavController().navigate(
-                R.id.action_showsActivity_to_showDetailsActivity,
-                bundleOf(TITLE_ARG to title, DESC_ARG to desc, IMG_ARG to img)
-            )
+            findNavController().navigate(R.id.action_showsActivity_to_showDetailsActivity, bundleOf(ID to id))
         }
 
         binding.recycleView.layoutManager = LinearLayoutManager(activity)
@@ -129,7 +195,7 @@ class ShowsActivity : Fragment() {
             bottomSheetBinding.profilePicture.setImageBitmap(bitmap)
         }
 
-        email = arguments?.getString(LoginActivity.EMAIL).toString()
+        email = app.uid!!
         bottomSheetBinding.userMail.text = email
 
         bottomSheetBinding.changeProfilePictureButton.setOnClickListener {
@@ -154,7 +220,10 @@ class ShowsActivity : Fragment() {
         alertDialogBuilder.setPositiveButton(android.R.string.yes) { dialog, which ->
             val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
             preferences.edit {
-                putBoolean(LoginActivity.REMEMBER_ME, false).commit()
+                putBoolean(LoginFragment.REMEMBER_ME, false).commit()
+                remove("UID").commit()
+                remove("TOKEN").commit()
+                remove("CLIENT").commit()
             }
             exitProcess(-1)
         }

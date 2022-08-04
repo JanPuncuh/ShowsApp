@@ -23,4 +23,12 @@ class ShowsViewModel : ViewModel() {
         _shows.value = showsList
     }
 
+    private val _shows2 = MutableLiveData<List<Show2>>()
+    val shows2: LiveData<List<Show2>> = _shows2
+
+
+    fun onResponseAPI(shows: List<Show2>) {
+        _shows2.value = shows
+    }
+
 }

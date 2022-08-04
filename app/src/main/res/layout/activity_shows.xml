@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShowsActivity">
+    tools:context=".ShowsFragment">
 
     <TextView
         android:id="@+id/showsText"
@@ -46,6 +46,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/loadingStateText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/shows_are_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emptyStateImageBackground"
         android:textAlignment="center"/>
 
     <ImageView

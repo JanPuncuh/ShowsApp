@@ -24,71 +24,39 @@
         app:srcCompat="@drawable/ic_top_right_illustration" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/loginButton"
+        android:id="@+id/registerButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
         android:layout_marginEnd="@dimen/margin_end"
         android:background="@drawable/button"
         android:enabled="false"
-        android:text="@string/loginButton"
+        android:text="@string/register"
         android:textAllCaps="false"
         android:textColor="@color/my_purple"
-        app:layout_constraintBottom_toTopOf="@+id/registerButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutPasswordRepeat"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword"
         app:layout_constraintVertical_bias="0.80"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/registerButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="@dimen/margin_start"
-        android:layout_marginEnd="@dimen/margin_end"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:background="@drawable/button"
-        android:backgroundTint="@color/my_purple"
-        android:text="@string/register"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
     <TextView
         android:id="@+id/textViewLoginBig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginBottom="16dp"
-        android:text="@string/LoginTitle"
+        android:text="@string/register"
         android:textColor="@color/white"
         android:textSize="@dimen/textsize_big"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textViewLoginSmall"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutEmailAddress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewTopRight"
         app:layout_constraintVertical_bias="0.75"
         app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/textViewLoginSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="@dimen/margin_start"
-        android:text="@string/LoginDescription"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutEmailAddress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLoginBig" />
 
     <ImageView
         android:id="@+id/arrowLogoShows"
@@ -127,16 +95,16 @@
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/textinput"
         app:hintTextColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayoutPassword"
+        app:layout_constraintBottom_toTopOf="@id/textInputLayoutPassword"
         app:layout_constraintTop_toBottomOf="@id/imageViewTopRight"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintVertical_bias="0.40"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:layout_editor_absoluteX="24dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:inputType="textEmailAddress"
             android:textColor="@color/white"
             android:textColorHighlight="@color/white"
@@ -144,21 +112,22 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutPassword"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="@dimen/margin_end"
         android:backgroundTint="@color/white"
         android:hint="@string/passwordHint"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/textinput"
         app:hintTextColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmailAddress"
+        app:layout_constraintBottom_toTopOf="@id/registerButton"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutEmailAddress"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
 
@@ -172,15 +141,31 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutPasswordRepeat"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
-        android:buttonTint="@color/white"
-        android:text="@string/checkbox_remember_me"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin_end"
+        android:backgroundTint="@color/white"
+        android:hint="@string/passwordHint"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/textinput"
+        app:hintTextColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutPassword"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPasswordRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
