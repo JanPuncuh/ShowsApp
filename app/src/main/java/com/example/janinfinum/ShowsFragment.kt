@@ -123,7 +123,6 @@ class ShowsFragment : Fragment() {
         }
         //if no internet, get from database
         else {
-            Log.d("TEST", "AAAAAA")
             viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
                 if (shows.isNullOrEmpty()) {
                     showEmptyState()
