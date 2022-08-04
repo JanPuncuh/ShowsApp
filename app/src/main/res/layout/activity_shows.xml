@@ -10,6 +10,7 @@
         android:id="@+id/showsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:imageSrc="@drawable/ic_profile_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,21 +30,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/empty_state_recycler_view"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textAlignment="center"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/loadingStateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/shows_are_loading"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emptyStateImageBackground"
-        android:textAlignment="center"/>
+        app:layout_constraintTop_toBottomOf="@id/emptyStateImageBackground" />
 
     <ImageView
         android:id="@+id/emptyStateImageBackground"

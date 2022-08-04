@@ -16,13 +16,11 @@ class ToolBarWithImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    lateinit var binding: CustomToolbarBinding
+    var binding: CustomToolbarBinding = CustomToolbarBinding.inflate(
+        LayoutInflater.from(context), this
+    )
 
     init {
-        binding = CustomToolbarBinding.inflate(
-            LayoutInflater.from(context), this
-        )
-
 
         clipToPadding = false
         clipChildren = false
@@ -34,6 +32,19 @@ class ToolBarWithImageView @JvmOverloads constructor(
             context.resources.getDimensionPixelSize(R.dimen.spacing_1x)
         )
 
+        context.withStyledAttributes(attrs, R.styleable.ToolBarWithImageView) {
+            //sets "imageSrc" custom attribute
+            binding.toolbarImage
+                .setImageResource(
+                    this.getResourceId(
+                        R.styleable.ToolBarWithImageView_imageSrc, -1
+                    )
+                )
+
+            //text attribute
+            binding.toolbarText.text = getString(R.styleable.ToolBarWithImageView_text)
+
+        }
 
     }
 
