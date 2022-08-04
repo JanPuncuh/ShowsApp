@@ -6,25 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ShowsFragment">
 
-    <TextView
+    <com.example.janinfinum.ToolBarWithImageView
         android:id="@+id/showsText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/shows"
-        android:textStyle="bold"
-        android:textSize="@dimen/textsize_big"
-        android:layout_marginStart="@dimen/margin_start"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageLogout"
-        android:layout_width="32dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_profile_placeholder"
-        android:layout_marginEnd="@dimen/margin_end"
-        app:layout_constraintBottom_toTopOf="@+id/recycleView"
+        app:imageSrc="@drawable/ic_profile_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -42,21 +30,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/empty_state_recycler_view"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textAlignment="center"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/loadingStateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/shows_are_loading"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emptyStateImageBackground"
-        android:textAlignment="center"/>
+        app:layout_constraintTop_toBottomOf="@id/emptyStateImageBackground" />
 
     <ImageView
         android:id="@+id/emptyStateImageBackground"

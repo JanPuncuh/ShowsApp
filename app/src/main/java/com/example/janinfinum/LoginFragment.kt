@@ -7,17 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.core.content.edit
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
-import androidx.core.content.edit
-import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import retrofit2.Call
 import retrofit2.Response
-import kotlin.math.log
+import java.util.*
 
 
 class LoginFragment : Fragment() {
@@ -47,6 +48,11 @@ class LoginFragment : Fragment() {
         ApiModule.initRetrofit(requireActivity())
 
         app = activity?.application as MyApplication
+
+        binding.arrowLogoShows.startAnimation(AnimationUtils.loadAnimation(context, R.anim.drop_down))
+        binding.textViewShowsLogo.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_1s_offset))
+
+
 
         val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
         if (registered != null && registered == true) {
@@ -170,7 +176,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun enableLoginButton() {
-        binding.loginButton.isEnabled = validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
+        binding.loginButton.isEnabled =
+            validateLogin(binding.editTextEmailAddress.text.toString(), binding.editTextPassword.text.toString())
     }
 
 }
