@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/showDetailsActivity"
-        android:name="com.example.janinfinum.ShowFragment"
+        android:name="com.example.janinfinum.ShowsDetailsFragment"
         android:label="activity_show_details"
         tools:layout="@layout/activity_show_details" />
     <fragment

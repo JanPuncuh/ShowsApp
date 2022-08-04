@@ -46,7 +46,9 @@ class ShowsFragment : Fragment() {
 
     private lateinit var adapter: ShowsAdapter
 
-    private val viewModel by viewModels<ShowsViewModel>()
+    private val viewModel: ShowsViewModel by viewModels {
+        ShowsViewModelFactory(app.database)
+    }
 
     companion object {
         const val ID = "ID"
@@ -96,26 +98,42 @@ class ShowsFragment : Fragment() {
         showLoadingState()
 
         //if online, api
-        ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
-            .enqueue(object : retrofit2.Callback<ShowResponse> {
-                override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-                    if (response.isSuccessful) {
-                        viewModel.onResponseAPI(response.body()?.shows!!)
-                        viewModel.shows2.observe(viewLifecycleOwner) {
-                            initShowsRecycler(it)
+        if (app.isOnline(requireContext())) {
+            ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
+                .enqueue(object : retrofit2.Callback<ShowResponse> {
+                    override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
+                        if (response.isSuccessful) {
+                            viewModel.onResponseAPI(response.body()?.shows!!)
+                            viewModel.shows.observe(viewLifecycleOwner) {
+                                initShowsRecycler(it)
 
+                                app.database.showsDao().insertAllShows(response.body()?.shows!!)
+                            }
+
+                            setEmptyOrNormalState(viewModel.shows.value!!)
                         }
-
-                        setEmptyOrNormalState(viewModel.shows2.value!!)
+                        //todo  handle unsuccessful
                     }
-                    //todo  handle unsuccessful
-                }
 
-                override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
-                    Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
-                    Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
+                    override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
+                        Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
+                        Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
+                    }
+                })
+        }
+        //if no internet, get from database
+        else {
+            viewModel.getShowsFromDatabase().observe(viewLifecycleOwner) { shows ->
+                if (shows.isNullOrEmpty()) {
+                    showEmptyState()
+                    if (shows == null) Log.d("TEST", "shows == null")
                 }
-            })
+                else {
+                    initShowsRecycler(shows)
+                    setEmptyOrNormalState(shows)
+                }
+            }
+        }
 
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()

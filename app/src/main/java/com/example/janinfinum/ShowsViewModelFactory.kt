@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.lang.IllegalArgumentException
 
-class ShowDetailsViewModelFactory(private val database: AppDatabase) : ViewModelProvider.NewInstanceFactory() {
+class ShowsViewModelFactory(private val database: AppDatabase) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ShowDetailsViewModel::class.java)) {
-            return ShowDetailsViewModel(database) as T
+        if (modelClass.isAssignableFrom(ShowsViewModel::class.java)) {
+            return ShowsViewModel(database) as T
         }
         throw IllegalArgumentException("?")
     }

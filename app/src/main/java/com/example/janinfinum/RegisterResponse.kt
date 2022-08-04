@@ -1,5 +1,8 @@
 package com.example.janinfinum
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +13,7 @@ data class RegisterResponse(
 
 @Serializable
 data class User(
-    @SerialName("id") val id: String,
+    @PrimaryKey @SerialName("id") val id: String,
     @SerialName("email") val email: String,
     @SerialName("image_url") val imageUrl: String?
 )
