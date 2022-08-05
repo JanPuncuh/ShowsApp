@@ -73,8 +73,7 @@ class ShowsFragment : Fragment() {
                 //sets both images and saves it on phone's storage
                 if (takenPhoto != null) {
                     bottomSheetBinding.profilePicture.setImageBitmap(takenPhoto as Bitmap?)
-                    //binding.imageLogout.setImageBitmap(takenPhoto as Bitmap)
-                    binding.showsText.setBitmapImage(takenPhoto)
+                    binding.toolbar.setBitmapImage(takenPhoto)
 
                     ImageSaver(context).setFileName("myImage.png").setDirectoryName("images").save(takenPhoto)
                 }
@@ -94,33 +93,21 @@ class ShowsFragment : Fragment() {
         if (app.client == null) app.client = preferences.getString(CLIENT, "default")
         if (app.uid == null) app.uid = preferences.getString(UID, "testtest@testi.si")
 
-        ApiModule.initRetrofit(requireActivity())
-
         showLoadingState()
 
         //if online, api
         if (app.isOnline(requireContext())) {
-            ApiModule.retrofit.getShows("Bearer", app.token!!, app.client!!, app.uid!!)
-                .enqueue(object : retrofit2.Callback<ShowResponse> {
-                    override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-                        if (response.isSuccessful) {
-                            viewModel.onResponseAPI(response.body()?.shows!!)
-                            viewModel.shows.observe(viewLifecycleOwner) {
-                                initShowsRecycler(it)
-
-                                app.database.showsDao().insertAllShows(response.body()?.shows!!)
-                            }
-
-                            setEmptyOrNormalState(viewModel.shows.value!!)
-                        }
-                        //todo  handle unsuccessful
-                    }
-
-                    override fun onFailure(call: Call<ShowResponse>, t: Throwable) {
-                        Toast.makeText(requireActivity(), "failed to load data", Toast.LENGTH_SHORT).show()
-                        Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
-                    }
-                })
+            viewModel.getShows(app)
+            viewModel.shows.observe(viewLifecycleOwner) { shows ->
+                if (shows.isNullOrEmpty()) {
+                    showEmptyState()
+                }
+                else {
+                    initShowsRecycler(shows)
+                    showNormalState()
+                }
+            }
+            
         }
         //if no internet, get from database
         else {
@@ -139,10 +126,10 @@ class ShowsFragment : Fragment() {
         //sets profile picture
         val bitmap = ImageSaver(requireContext()).setFileName("myImage.png").setDirectoryName("images").load()
         if (bitmap != null) {
-            binding.showsText.setBitmapImage(bitmap)
+            binding.toolbar.setBitmapImage(bitmap)
         }
 
-        binding.showsText.getImage().setOnClickListener {
+        binding.toolbar.getImage().setOnClickListener {
             showProfileDialog()
         }
     }
@@ -151,18 +138,16 @@ class ShowsFragment : Fragment() {
         binding.emptyStateImageForeground.isVisible = true
         binding.emptyStateImageBackground.isVisible = true
         binding.recycleView.isVisible = false
-        binding.showsText.isVisible = false
+        binding.toolbar.isVisible = false
         binding.loadingStateText.isVisible = false
         binding.emptyStateText.isVisible = true
-        //binding.imageLogout.isVisible = false
     }
 
     private fun showNormalState() {
         binding.emptyStateImageForeground.isVisible = false
         binding.emptyStateImageBackground.isVisible = false
         binding.recycleView.isVisible = true
-        binding.showsText.isVisible = true
-        //binding.imageLogout.isVisible = true
+        binding.toolbar.isVisible = true
         binding.emptyStateText.isVisible = false
         binding.loadingStateText.isVisible = false
     }
@@ -180,9 +165,8 @@ class ShowsFragment : Fragment() {
         binding.emptyStateImageForeground.isVisible = true
         binding.emptyStateImageBackground.isVisible = true
         binding.recycleView.isVisible = false
-        binding.showsText.isVisible = false
+        binding.toolbar.isVisible = false
         binding.emptyStateText.isVisible = false
-        //binding.imageLogout.isVisible = false
     }
 
     override fun onDestroyView() {
