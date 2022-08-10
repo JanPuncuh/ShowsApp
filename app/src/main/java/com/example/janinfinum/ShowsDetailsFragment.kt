@@ -57,31 +57,24 @@ class ShowsDetailsFragment : Fragment() {
             //gets show's details
             showLoadingState()
 
-            ApiModule.retrofit.getShow(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
-                .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
-                    override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
-                        if (response.isSuccessful) {
-                            show = response.body()?.show2!!
-                            setShowsDetails(show)
+            viewModel.getShow(showId, app)
+            viewModel.show.observe(viewLifecycleOwner) { show ->
+                if (show != null) {
+                    setShowsDetails(show)
 
-                            viewModel.fetchReview(showId, app)
-                            viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
-                                if (reviews != null) {
-                                    app.database.reviewDao().insertAllReviewsFromShow(reviews)
-                                    initReviewRecycler(reviews)
-                                    setEmptyOrNormalState(reviews)
-                                }
-                                else {
-                                    Toast.makeText(requireContext(), "Error getting reviews", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                    viewModel.fetchReview(showId, app)
+                    viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+                        if (reviews != null) {
+                            app.database.reviewDao().insertAllReviewsFromShow(reviews)
+                            initReviewRecycler(reviews)
+                            setEmptyOrNormalState(reviews)
+                        }
+                        else {
+                            Toast.makeText(requireContext(), "Error getting reviews", Toast.LENGTH_SHORT).show()
                         }
                     }
-
-                    override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
-                        //todo handle failure
-                    }
-                })
+                }
+            }
         }
         //no connection
         else {

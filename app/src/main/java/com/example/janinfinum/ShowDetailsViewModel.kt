@@ -13,6 +13,9 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
     private val _reviews = MutableLiveData<ArrayList<Review2>?>()
     val reviews: LiveData<ArrayList<Review2>?> = _reviews
 
+    private val _show = MutableLiveData<Show2?>()
+    val show: LiveData<Show2?> = _show
+
     private val _avg = MutableLiveData<Float>()
     val avg: LiveData<Float> = _avg
 
@@ -37,6 +40,22 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
 
     fun getShowFromDatabase(id: String): LiveData<Show2> {
         return database.showsDao().getShow(id)
+    }
+
+    fun getShow(showId: String, app: MyApplication) {
+        ApiModule.retrofit.getShow(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
+            .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
+                override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
+                    if (response.isSuccessful) {
+                        _show.value = response.body()?.show2!!
+                    }
+                    _show.value = null
+                }
+
+                override fun onFailure(call: Call<ShowDetailsResponse>, t: Throwable) {
+                    _show.value = null
+                }
+            })
     }
 
     fun fetchReview(showId: String, app: MyApplication) {
