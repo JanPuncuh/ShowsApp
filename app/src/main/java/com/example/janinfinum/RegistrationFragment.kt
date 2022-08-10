@@ -6,23 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.RegistrationFragmentBinding
-import retrofit2.Call
-import retrofit2.Response
 
 class RegistrationFragment : Fragment() {
 
     private var _binding: RegistrationFragmentBinding? = null
     private val binding get() = _binding!!
-
-    companion object {
-        const val REGISTER_SUCCESS = "REGISTER_SUCCESS"
-    }
 
     private val viewModel by viewModels<RegistrationViewModel>()
 

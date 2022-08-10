@@ -58,15 +58,12 @@ class LoginFragment : Fragment() {
             findNavController().navigate(directions)
         }
 
-        //sets preference
-        binding.checkBox.setOnClickListener() {
+        //LOGIN BUTTON PRESSED
+        binding.loginButton.setOnClickListener {
+
             preferences.edit {
                 putBoolean(REMEMBER_ME, binding.checkBox.isChecked)
             }
-        }
-
-        //LOGIN BUTTON PRESSED
-        binding.loginButton.setOnClickListener {
 
             val email = binding.editTextEmailAddress.text.toString()
             val password = binding.editTextPassword.text.toString()
