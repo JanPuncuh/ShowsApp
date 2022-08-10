@@ -18,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.janinfinum.databinding.ActivityLoginBinding
 import retrofit2.Call
 import retrofit2.Response
-import java.util.*
 
 
 class LoginFragment : Fragment() {
@@ -35,10 +34,8 @@ class LoginFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        //return super.onCreateView(inflater, container, savedInstanceState)
         _binding = ActivityLoginBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,23 +46,14 @@ class LoginFragment : Fragment() {
 
         app = activity?.application as MyApplication
 
-        binding.arrowLogoShows.startAnimation(AnimationUtils.loadAnimation(context, R.anim.drop_down))
-        binding.textViewShowsLogo.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_1s_offset))
+        setAnimations()
 
-
-
-        val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
-        if (registered != null && registered == true) {
-            binding.textViewLoginBig.text = "Registration\nsuccessful!"
-            binding.registerButton.isVisible = false
-        }
+        setTextIfRegistered()
 
         //if remember me, skip login
         if (preferences.getBoolean(REMEMBER_ME, false)) {
             findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
         }
-
-        binding.checkBox.isChecked = preferences.getBoolean(REMEMBER_ME, false)
 
         //sets preference
         binding.checkBox.setOnClickListener() {
@@ -82,6 +70,7 @@ class LoginFragment : Fragment() {
 
             val loginRequest = LoginRequest(email, password)
 
+            //shows to user that login request is in process
             val dialog = Dialog(requireContext())
             dialog.setContentView(R.layout.logging_in_layout)
             dialog.setCancelable(false)
@@ -90,9 +79,7 @@ class LoginFragment : Fragment() {
             ApiModule.retrofit.login(loginRequest)
                 .enqueue(object : retrofit2.Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-
                         if (response.isSuccessful) {
-
                             app.token = response.headers()["access-token"]
                             preferences.edit().putString("TOKEN", app.token).apply()
                             app.client = response.headers()["client"]
@@ -101,29 +88,12 @@ class LoginFragment : Fragment() {
                             preferences.edit().putString("UID", app.uid).apply()
                             app.user = response.body()?.user
 
-                            //if checked at login, save email
-                            if (binding.checkBox.isChecked) {
-                                if (!preferences.contains(EMAIL)) {
-                                    preferences.edit() {
-                                        putString(EMAIL, binding.editTextEmailAddress.text.toString())
-                                    }
-                                }
-                            }
-                            //if unchecked at login, remove email from storage
-                            else {
-                                if (preferences.contains(EMAIL)) {
-                                    preferences.edit().remove(EMAIL).apply()
-                                }
-                            }
-
                             //if login success, navigate to shows
                             dialog.dismiss()
-                            if (findNavController().currentDestination?.id == R.id.loginActivity) {
-                                findNavController().navigate(
-                                    R.id.action_loginActivity_to_showsActivity,
-                                    bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
-                                )
-                            }
+                            findNavController().navigate(
+                                R.id.action_loginActivity_to_showsActivity,
+                                bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
+                            )
                         }
                         else if (!response.isSuccessful) {
                             Toast.makeText(requireActivity(), R.string.login_unsuccessful, Toast.LENGTH_SHORT).show()
@@ -161,6 +131,19 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setTextIfRegistered() {
+        val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
+        if (registered != null && registered == true) {
+            binding.textViewLoginBig.text = getString(R.string.registration_successful)
+            binding.registerButton.isVisible = false
+        }
+    }
+
+    private fun setAnimations() {
+        binding.arrowLogoShows.startAnimation(AnimationUtils.loadAnimation(context, R.anim.drop_down))
+        binding.textViewShowsLogo.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_1s_offset))
     }
 
     private fun emailValidate(email: String): Boolean {

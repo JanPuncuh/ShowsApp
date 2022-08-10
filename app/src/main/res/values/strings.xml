@@ -25,4 +25,5 @@
     <string name="unrated_review_toast_message">Please rate the show</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="login_unsuccessful">Login Unsuccessful \n Check your email and password</string>
+    <string name="registration_successful">Registration\nsuccessful!</string>
 </resources>

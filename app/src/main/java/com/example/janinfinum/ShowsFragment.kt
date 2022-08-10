@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -28,8 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.janinfinum.databinding.ActivityShowsBinding
 import com.example.janinfinum.databinding.ManageProfileBottomsheetLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import retrofit2.Call
-import retrofit2.Response
 import kotlin.system.exitProcess
 
 
@@ -87,7 +84,6 @@ class ShowsFragment : Fragment() {
         app = activity?.application as MyApplication
 
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-
         //set either here or in registrationFragment after successful register
         if (app.token == null) app.token = preferences.getString(TOKEN, "default")
         if (app.client == null) app.client = preferences.getString(CLIENT, "default")
@@ -107,7 +103,6 @@ class ShowsFragment : Fragment() {
                     showNormalState()
                 }
             }
-            
         }
         //if no internet, get from database
         else {
