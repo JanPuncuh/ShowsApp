@@ -31,23 +31,12 @@ class ReviewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
-        if (viewType == 0) {
-            val binding = ReviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ReviewViewHolder(binding)
-        }
-        else if (viewType == 1) {
-            val binding = ReviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ReviewViewHolder(binding)
-            //todo tk ko pr viewtype == 0
-        }
         val binding = ReviewLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ReviewViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        if (items?.get(position) is Review) {
-            holder.bind(items[position] as Review)
-        }
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int {
@@ -57,12 +46,5 @@ class ReviewAdapter(
     fun addItem(review: Review) {
         items.add(review)
         notifyItemInserted(items.lastIndex)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        if (items.get(position) is Review) {
-            return 0
-        }
-        return 1
     }
 }

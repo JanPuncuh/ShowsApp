@@ -11,6 +11,10 @@
         android:label="activity_login"
         tools:layout="@layout/activity_login">
 
+        <argument
+            android:name="success"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/action_loginActivity_to_showsActivity"
             app:destination="@id/showsActivity" />
@@ -22,7 +26,7 @@
         android:id="@+id/showsActivity"
         android:name="com.example.janinfinum.ShowsFragment"
         android:label="activity_shows"
-        tools:layout="@layout/activity_shows" >
+        tools:layout="@layout/activity_shows">
         <action
             android:id="@+id/action_showsActivity_to_showDetailsActivity"
             app:destination="@id/showDetailsActivity" />
@@ -38,9 +42,10 @@
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.example.janinfinum.RegistrationFragment"
-        android:label="RegistrationFragment" >
+        android:label="RegistrationFragment">
         <action
             android:id="@+id/action_registrationFragment_to_loginActivity"
             app:destination="@id/loginActivity" />
+
     </fragment>
 </navigation>

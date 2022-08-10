@@ -3,22 +3,18 @@ package com.example.janinfinum
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.content.edit
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.janinfinum.databinding.ActivityLoginBinding
-import retrofit2.Call
-import retrofit2.Response
 
 
 class LoginFragment : Fragment() {
@@ -29,9 +25,10 @@ class LoginFragment : Fragment() {
 
     private val viewModel by viewModels<LoginViewModel>()
 
+    private val args by navArgs<LoginFragmentArgs>()
+
 
     companion object {
-        const val EMAIL = "EMAIL"
         const val REMEMBER_ME = "REMEMBER_ME"
         const val MIN_PASSWORD_LENGTH = 6
         val emailRegex = Regex("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+\$")
@@ -52,7 +49,8 @@ class LoginFragment : Fragment() {
 
         setAnimations()
 
-        setTextIfRegistered()
+        //todo this crashes???
+        //setTextIfRegistered()
 
         val directions = LoginFragmentDirections.actionLoginActivityToShowsActivity()
         //if remember me, skip login
@@ -72,8 +70,6 @@ class LoginFragment : Fragment() {
 
             val email = binding.editTextEmailAddress.text.toString()
             val password = binding.editTextPassword.text.toString()
-
-            val loginRequest = LoginRequest(email, password)
 
             //shows to user that login request is in process
             val dialog = Dialog(requireContext())
@@ -130,8 +126,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setTextIfRegistered() {
-        val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
-        if (registered != null && registered == true) {
+        if (args.success) {
             binding.textViewLoginBig.text = getString(R.string.registration_successful)
             binding.registerButton.isVisible = false
         }

@@ -26,7 +26,7 @@ class RegistrationFragment : Fragment() {
 
     private val viewModel by viewModels<RegistrationViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = RegistrationFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -59,10 +59,8 @@ class RegistrationFragment : Fragment() {
         viewModel.register(email, password, passwordRepeat, preferences)
         viewModel.success.observe(viewLifecycleOwner) { success ->
             if (success) {
-                findNavController().navigate(
-                    R.id.action_registrationFragment_to_loginActivity,
-                    bundleOf(REGISTER_SUCCESS to true)
-                )
+                val directions = RegistrationFragmentDirections.actionRegistrationFragmentToLoginActivity(true)
+                findNavController().navigate(directions)
             }
             else Toast.makeText(requireContext(), "ur garbage :)", Toast.LENGTH_SHORT).show()
         }
