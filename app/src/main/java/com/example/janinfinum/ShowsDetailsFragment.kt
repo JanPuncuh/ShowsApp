@@ -1,9 +1,7 @@
 package com.example.janinfinum
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -16,13 +14,11 @@ import com.example.janinfinum.databinding.ActivityShowDetailsBinding
 import com.example.janinfinum.databinding.NewReviewLayoutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.squareup.picasso.Picasso
-import retrofit2.Call
-import retrofit2.Response
 import kotlin.math.absoluteValue
 
 class ShowsDetailsFragment : Fragment() {
 
-    private lateinit var show: Show2
+    private lateinit var selectedShow: Show
     private lateinit var showId: String
     private var _binding: ActivityShowDetailsBinding? = null
     private val binding get() = _binding!!
@@ -62,6 +58,8 @@ class ShowsDetailsFragment : Fragment() {
                 if (show != null) {
                     setShowsDetails(show)
 
+                    selectedShow = show
+
                     viewModel.fetchReview(showId, app)
                     viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
                         if (reviews != null) {
@@ -85,9 +83,11 @@ class ShowsDetailsFragment : Fragment() {
                 setShowsDetails(show)
                 showNormalState()
 
+                selectedShow = show
+
                 //gets reviews from that show
                 viewModel.getReviewsFromDatabase(showId).observe(viewLifecycleOwner) { reviews ->
-                    initReviewRecycler(reviews as ArrayList<Review2>)
+                    initReviewRecycler(reviews as ArrayList<Review>)
                     if (reviews.isNullOrEmpty()) {
                         showEmptyState()
                     }
@@ -96,11 +96,10 @@ class ShowsDetailsFragment : Fragment() {
                     }
                 }
             }
-
         }
     }
 
-    private fun setShowsDetails(show: Show2) {
+    private fun setShowsDetails(show: Show) {
         binding.showDetailTitle.title = show.title
         binding.showDetailDesc.text = show.description
         Picasso.get().load(show.imageUrl).into(binding.showDetailImage)
@@ -145,7 +144,7 @@ class ShowsDetailsFragment : Fragment() {
         }
     }
 
-    private fun setEmptyOrNormalState(list: ArrayList<Review2>) {
+    private fun setEmptyOrNormalState(list: ArrayList<Review>) {
         if (list.isEmpty()) {
             showEmptyState()
         }
@@ -173,7 +172,7 @@ class ShowsDetailsFragment : Fragment() {
             }
 
             if (app.isOnline(requireContext())) {
-                val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, show.id.toInt())
+                val reviewRequest = ReviewRequest(rating.toInt(), reviewComment, selectedShow.id.toInt())
                 addReview(reviewRequest)
             }
 
@@ -183,7 +182,7 @@ class ShowsDetailsFragment : Fragment() {
         dialog.show()
     }
 
-    private fun initReviewRecycler(list: ArrayList<Review2>) {
+    private fun initReviewRecycler(list: ArrayList<Review>) {
         //click on item in recycler view
         adapter = ReviewAdapter(list) {
 
@@ -191,28 +190,16 @@ class ShowsDetailsFragment : Fragment() {
 
         binding.recyclerVewReviews.layoutManager = LinearLayoutManager(activity)
         binding.recyclerVewReviews.adapter = adapter
-
     }
 
     private fun addReview(reviewRequest: ReviewRequest) {
-        ApiModule.retrofit.postReview("Bearer", app.token!!, app.client!!, app.uid!!, reviewRequest)
-            .enqueue(object : retrofit2.Callback<AddedReviewResponse> {
-                override fun onResponse(call: Call<AddedReviewResponse>, response: Response<AddedReviewResponse>) {
-
-                    if (response.isSuccessful) {
-                        val review = response.body()?.review
-
-                        if (review != null) {
-                            adapter.addItem(review)
-                            app.database.reviewDao().insertNewReview(review)
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<AddedReviewResponse>, t: Throwable) {
-                    //todo handle failure
-                }
-            })
+        viewModel.postReview(reviewRequest, app)
+        viewModel.postedReview.observe(viewLifecycleOwner) { postedReview ->
+            if (postedReview != null) {
+                adapter.addItem(postedReview)
+                app.database.reviewDao().insertNewReview(postedReview)
+            }
+        }
         updateRatings()
     }
 

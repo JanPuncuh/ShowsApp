@@ -147,7 +147,7 @@ class ShowsFragment : Fragment() {
         binding.loadingStateText.isVisible = false
     }
 
-    private fun setEmptyOrNormalState(list: List<Show2>) {
+    private fun setEmptyOrNormalState(list: List<Show>) {
         if (list.isNotEmpty()) {
             showNormalState()
         }
@@ -169,7 +169,7 @@ class ShowsFragment : Fragment() {
         _binding = null
     }
 
-    private fun initShowsRecycler(list: List<Show2>) {
+    private fun initShowsRecycler(list: List<Show>) {
         //click on item in recycler view
         adapter = ShowsAdapter(list) { show ->
             val id = show.id

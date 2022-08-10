@@ -1,7 +1,5 @@
 package com.example.janinfinum
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,17 +8,20 @@ import retrofit2.Response
 
 class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
 
-    private val _reviews = MutableLiveData<ArrayList<Review2>?>()
-    val reviews: LiveData<ArrayList<Review2>?> = _reviews
+    private val _reviews = MutableLiveData<ArrayList<Review>?>()
+    val reviews: LiveData<ArrayList<Review>?> = _reviews
 
-    private val _show = MutableLiveData<Show2?>()
-    val show: LiveData<Show2?> = _show
+    private val _show = MutableLiveData<Show?>()
+    val show: LiveData<Show?> = _show
+
+    private val _postedReview = MutableLiveData<Review?>()
+    val postedReview: LiveData<Review?> = _postedReview
 
     private val _avg = MutableLiveData<Float>()
     val avg: LiveData<Float> = _avg
 
     //sets the average reviews score
-    fun averageRating(list: ArrayList<Review2>) {
+    fun averageRating(list: ArrayList<Review>) {
         var rating = 0F
         list.forEach { review ->
             rating += review.rating
@@ -30,24 +31,25 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
         return
     }
 
-    fun setReviews(reviews: ArrayList<Review2>?) {
+    fun setReviews(reviews: ArrayList<Review>?) {
         _reviews.value = reviews!!
     }
 
-    fun getReviewsFromDatabase(id: String): LiveData<List<Review2>> {
+    fun getReviewsFromDatabase(id: String): LiveData<List<Review>> {
         return database.reviewDao().getAllReviewsFromShow(id)
     }
 
-    fun getShowFromDatabase(id: String): LiveData<Show2> {
+    fun getShowFromDatabase(id: String): LiveData<Show> {
         return database.showsDao().getShow(id)
     }
 
+    //API call for getting shows details
     fun getShow(showId: String, app: MyApplication) {
         ApiModule.retrofit.getShow(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
                 override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
                     if (response.isSuccessful) {
-                        _show.value = response.body()?.show2!!
+                        _show.value = response.body()?.show!!
                     }
                     _show.value = null
                 }
@@ -58,6 +60,7 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
             })
     }
 
+    //API call for getting reviews
     fun fetchReview(showId: String, app: MyApplication) {
         ApiModule.retrofit.getReviews(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
             .enqueue(object : retrofit2.Callback<ReviewResponse> {
@@ -71,13 +74,28 @@ class ShowDetailsViewModel(private val database: AppDatabase) : ViewModel() {
                     }
                     else {
                         _reviews.value = null
-                        Log.d("TEST", "response not successful")
                     }
                 }
 
                 override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
                     _reviews.value = null
-                    Log.d("TEST", "${t.message.toString()}\n${t.printStackTrace()}")
+                }
+            })
+    }
+
+    //API call for posting new review
+    fun postReview(reviewRequest: ReviewRequest, app: MyApplication) {
+        ApiModule.retrofit.postReview("Bearer", app.token!!, app.client!!, app.uid!!, reviewRequest)
+            .enqueue(object : retrofit2.Callback<AddedReviewResponse> {
+                override fun onResponse(call: Call<AddedReviewResponse>, response: Response<AddedReviewResponse>) {
+                    if (response.isSuccessful) {
+                        _postedReview.value = response.body()?.review
+                    }
+                    else _postedReview.value = null
+                }
+
+                override fun onFailure(call: Call<AddedReviewResponse>, t: Throwable) {
+                    _postedReview.value = null
                 }
             })
     }

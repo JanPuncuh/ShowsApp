@@ -1,7 +1,5 @@
 package com.example.janinfinum
 
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,18 +8,18 @@ import retrofit2.Response
 
 class ShowsViewModel(private val database: AppDatabase) : ViewModel() {
 
-    private val _shows = MutableLiveData<List<Show2>>()
-    val shows: LiveData<List<Show2>> = _shows
+    private val _shows = MutableLiveData<List<Show>>()
+    val shows: LiveData<List<Show>> = _shows
 
     init {
         database.showsDao().getAllShows()
     }
 
-    fun getShowsFromDatabase(): LiveData<List<Show2>> {
+    fun getShowsFromDatabase(): LiveData<List<Show>> {
         return database.showsDao().getAllShows()
     }
 
-    fun onResponseAPI(shows: List<Show2>) {
+    fun onResponseAPI(shows: List<Show>) {
         _shows.value = shows
     }
 

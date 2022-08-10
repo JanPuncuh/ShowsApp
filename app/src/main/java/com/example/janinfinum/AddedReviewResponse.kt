@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AddedReviewResponse(
-    @SerialName("review") val review: Review2,
+    @SerialName("review") val review: Review,
 )

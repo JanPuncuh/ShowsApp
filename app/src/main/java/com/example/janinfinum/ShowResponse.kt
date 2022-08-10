@@ -4,17 +4,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class ShowResponse(
-    @SerialName("shows") val shows: List<Show2>,
+    @SerialName("shows") val shows: List<Show>,
     @SerialName("meta") val meta: Meta
 )
 
 @Entity(tableName = "show")
 @Serializable
-data class Show2(
+data class Show(
     @PrimaryKey @SerialName("id") val id: String,
     @SerialName("average_rating") val averageRating: Float?,
     @SerialName("description") val description: String?,
