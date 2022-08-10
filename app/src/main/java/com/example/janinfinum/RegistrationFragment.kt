@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -49,32 +50,18 @@ class RegistrationFragment : Fragment() {
             val password = binding.editTextPassword.text.toString()
             val passwordRepeat = binding.editTextPasswordRepeat.text.toString()
 
-            val registerRequest = RegisterRequest(email, password, passwordRepeat)
+            val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
 
-            ApiModule.retrofit.register(registerRequest)
-                .enqueue(object : retrofit2.Callback<RegisterResponse> {
-                    override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                        viewModel.registrationResultLiveData.value = response.isSuccessful
-
-                        if (response.isSuccessful) {
-                            val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-                            preferences.edit().putString("TOKEN", response.headers()["access-token"]).apply()
-                            preferences.edit().putString("CLIENT", response.headers()["client"]).apply()
-                            preferences.edit().putString("UID", response.headers()["uid"]).apply()
-
-                            findNavController().navigate(
-                                R.id.action_registrationFragment_to_loginActivity,
-                                bundleOf(REGISTER_SUCCESS to true)
-                            )
-                        }
-                    }
-
-                    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                        viewModel.registrationResultLiveData.value = false
-                        return
-                    }
-
-                })
+            viewModel.register(email,password,passwordRepeat, preferences)
+            viewModel.success.observe(viewLifecycleOwner) { success ->
+                if (success) {
+                    findNavController().navigate(
+                        R.id.action_registrationFragment_to_loginActivity,
+                        bundleOf(REGISTER_SUCCESS to true)
+                    )
+                }
+                else Toast.makeText(requireContext(), "ur garbage :)", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
