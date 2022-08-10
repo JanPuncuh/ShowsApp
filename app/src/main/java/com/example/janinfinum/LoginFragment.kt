@@ -27,6 +27,9 @@ class LoginFragment : Fragment() {
     private var _binding: ActivityLoginBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel by viewModels<LoginViewModel>()
+
+
     companion object {
         const val EMAIL = "EMAIL"
         const val REMEMBER_ME = "REMEMBER_ME"
@@ -51,9 +54,10 @@ class LoginFragment : Fragment() {
 
         setTextIfRegistered()
 
+        val directions = LoginFragmentDirections.actionLoginActivityToShowsActivity()
         //if remember me, skip login
         if (preferences.getBoolean(REMEMBER_ME, false)) {
-            findNavController().navigate(R.id.action_loginActivity_to_showsActivity)
+            findNavController().navigate(directions)
         }
 
         //sets preference
@@ -77,39 +81,30 @@ class LoginFragment : Fragment() {
             dialog.setCancelable(false)
             dialog.show()
 
-            ApiModule.retrofit.login(loginRequest)
-                .enqueue(object : retrofit2.Callback<LoginResponse> {
-                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                        if (response.isSuccessful) {
-                            app.token = response.headers()["access-token"]
-                            preferences.edit().putString("TOKEN", app.token).apply()
-                            app.client = response.headers()["client"]
-                            preferences.edit().putString("CLIENT", app.client).apply()
-                            app.uid = email
-                            preferences.edit().putString("UID", app.uid).apply()
-                            app.user = response.body()?.user
-
-                            //if login success, navigate to shows
-                            dialog.dismiss()
-                            findNavController().navigate(
-                                R.id.action_loginActivity_to_showsActivity,
-                                bundleOf(EMAIL to binding.editTextEmailAddress.text.toString())
-                            )
-                        }
-                        else if (!response.isSuccessful) {
-                            Toast.makeText(requireActivity(), R.string.login_unsuccessful, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        Log.d("TEST", "${t.message.toString()}\n${t.stackTraceToString()}")
-                    }
-
-                })
+            viewModel.login(email, password)
+            viewModel.uid.observe(viewLifecycleOwner) {
+                app.uid = it
+                preferences.edit().putString("UID", app.uid).apply()
+            }
+            viewModel.token.observe(viewLifecycleOwner) {
+                app.token = it
+                preferences.edit().putString("TOKEN", app.token).apply()
+            }
+            viewModel.client.observe(viewLifecycleOwner) {
+                app.client = it
+                preferences.edit().putString("CLIENT", app.client).apply()
+            }
+            viewModel.successfulLogin.observe(viewLifecycleOwner) { success ->
+                if (success) {
+                    dialog.dismiss()
+                    //login -> shows
+                    findNavController().navigate(LoginFragmentDirections.actionLoginActivityToShowsActivity())
+                }
+            }
         }
 
         binding.registerButton.setOnClickListener() {
-            findNavController().navigate(R.id.action_loginActivity_to_registrationFragment)
+            findNavController().navigate(LoginFragmentDirections.actionLoginActivityToRegistrationFragment())
         }
 
         //checks validation of email

@@ -11,10 +11,6 @@
         android:label="activity_login"
         tools:layout="@layout/activity_login">
 
-        <argument
-            android:name="email"
-            app:argType="string" />
-
         <action
             android:id="@+id/action_loginActivity_to_showsActivity"
             app:destination="@id/showsActivity" />
