@@ -45,23 +45,26 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.registerButton.setOnClickListener {
+            register()
+        }
+    }
 
-            val email = binding.editTextEmailAddress.text.toString()
-            val password = binding.editTextPassword.text.toString()
-            val passwordRepeat = binding.editTextPasswordRepeat.text.toString()
+    private fun register() {
+        val email = binding.editTextEmailAddress.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        val passwordRepeat = binding.editTextPasswordRepeat.text.toString()
 
-            val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val preferences = requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
 
-            viewModel.register(email,password,passwordRepeat, preferences)
-            viewModel.success.observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    findNavController().navigate(
-                        R.id.action_registrationFragment_to_loginActivity,
-                        bundleOf(REGISTER_SUCCESS to true)
-                    )
-                }
-                else Toast.makeText(requireContext(), "ur garbage :)", Toast.LENGTH_SHORT).show()
+        viewModel.register(email, password, passwordRepeat, preferences)
+        viewModel.success.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                findNavController().navigate(
+                    R.id.action_registrationFragment_to_loginActivity,
+                    bundleOf(REGISTER_SUCCESS to true)
+                )
             }
+            else Toast.makeText(requireContext(), "ur garbage :)", Toast.LENGTH_SHORT).show()
         }
     }
 
