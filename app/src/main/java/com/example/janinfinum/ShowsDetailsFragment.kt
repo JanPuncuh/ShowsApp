@@ -43,11 +43,8 @@ class ShowsDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showId = arguments?.getString(ID).toString()
-        Log.d("TEST", showId)
 
         app = activity?.application as MyApplication
-
-        ApiModule.initRetrofit(requireActivity())
 
         binding.button.setOnClickListener() {
             if (app.isOnline(requireContext())) {
@@ -63,42 +60,21 @@ class ShowsDetailsFragment : Fragment() {
             ApiModule.retrofit.getShow(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
                 .enqueue(object : retrofit2.Callback<ShowDetailsResponse> {
                     override fun onResponse(call: Call<ShowDetailsResponse>, response: Response<ShowDetailsResponse>) {
-
                         if (response.isSuccessful) {
-
                             show = response.body()?.show2!!
-
                             setShowsDetails(show)
 
-                            //fetch reviews
-                            ApiModule.retrofit.getReviews(showId, "Bearer", app.token!!, app.client!!, app.uid!!)
-                                .enqueue(object : retrofit2.Callback<ReviewResponse> {
-                                    override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
-
-                                        if (response.isSuccessful) {
-                                            //saves all reviews from this show into DB
-                                            app.database.reviewDao().insertAllReviewsFromShow(response.body()?.reviews!!)
-
-                                            viewModel.onResponseAPI(response.body()?.reviews)
-                                            viewModel.reviews.observe(viewLifecycleOwner) {
-                                                initReviewRecycler(viewModel.reviews.value!!)
-                                            }
-
-                                            setEmptyOrNormalState(response.body()?.reviews!!)
-
-                                        }
-                                        else {
-                                            Log.d("TEST", "respone not successful")
-                                        }
-
-                                    }
-
-                                    override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
-                                        Log.d("TEST", "${t.message.toString()}\n${t.printStackTrace()}")
-                                        //todo display to user
-                                        Toast.makeText(requireActivity(), "Failed to load reviews", Toast.LENGTH_SHORT).show()
-                                    }
-                                })
+                            viewModel.fetchReview(showId, app)
+                            viewModel.reviews.observe(viewLifecycleOwner) { reviews ->
+                                if (reviews != null) {
+                                    app.database.reviewDao().insertAllReviewsFromShow(reviews)
+                                    initReviewRecycler(reviews)
+                                    setEmptyOrNormalState(reviews)
+                                }
+                                else {
+                                    Toast.makeText(requireContext(), "Error getting reviews", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
 
