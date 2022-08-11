@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        ApiModule.initRetrofit(this)
         /*if (savedInstanceState == null) {
 
             supportFragmentManager.commit {

@@ -43,14 +43,12 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val preferences = this.requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        ApiModule.initRetrofit(requireActivity())
 
         app = activity?.application as MyApplication
 
         setAnimations()
 
-        //todo this crashes???
-        //setTextIfRegistered()
+        setTextIfRegistered()
 
         val directions = LoginFragmentDirections.actionLoginActivityToShowsActivity()
         //if remember me, skip login
