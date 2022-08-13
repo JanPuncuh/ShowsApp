@@ -48,7 +48,10 @@ class LoginFragment : Fragment() {
 
         setAnimations()
 
-        setTextIfRegistered()
+        //no need to check for arguments if back stack is empty
+        if (requireActivity().supportFragmentManager.backStackEntryCount != 0) {
+            setTextIfRegistered()
+        }
 
         val directions = LoginFragmentDirections.actionLoginActivityToShowsActivity()
         //if remember me, skip login

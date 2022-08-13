@@ -53,7 +53,7 @@ class RegistrationFragment : Fragment() {
                 val directions = RegistrationFragmentDirections.actionRegistrationFragmentToLoginActivity(true)
                 findNavController().navigate(directions)
             }
-            else Toast.makeText(requireContext(), "ur garbage :)", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(requireContext(), "Error registering", Toast.LENGTH_SHORT).show()
         }
     }
 
