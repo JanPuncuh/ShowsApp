@@ -25,8 +25,7 @@ class LoginFragment : Fragment() {
 
     private val viewModel by viewModels<LoginViewModel>()
 
-    private val args by navArgs<LoginFragmentArgs>()
-
+    //private val args by navArgs<LoginFragmentArgs>()
 
     companion object {
         const val REMEMBER_ME = "REMEMBER_ME"
@@ -48,10 +47,7 @@ class LoginFragment : Fragment() {
 
         setAnimations()
 
-        //no need to check for arguments if back stack is empty
-        if (requireActivity().supportFragmentManager.backStackEntryCount != 0) {
-            setTextIfRegistered()
-        }
+        setTextIfRegistered()
 
         val directions = LoginFragmentDirections.actionLoginActivityToShowsActivity()
         //if remember me, skip login
@@ -124,7 +120,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun setTextIfRegistered() {
-        if (args.success) {
+        val registered = arguments?.getBoolean(RegistrationFragment.REGISTER_SUCCESS)
+        if (registered != null && registered == true) {
             binding.textViewLoginBig.text = getString(R.string.registration_successful)
             binding.registerButton.isVisible = false
         }
